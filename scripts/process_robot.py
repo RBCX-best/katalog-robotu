@@ -110,6 +110,79 @@ def main():
         print("Error: ISSUE_BODY environment variable is empty or not set.")
         return 1
 
+    # Check if this is a deletion request
+    is_deletion = "### Odstranění robota" in body or "Odstranění robota" in body
+
+    if is_deletion:
+        # Parse ID of robot to delete
+        match = re.search(r'[-*]\s*\*\*ID\*\*\s*:\s*(\d+)', body)
+        if not match:
+            print("Error: Could not parse ID for deletion request in body.")
+            return 1
+        delete_id = int(match.group(1))
+
+        # Load existing robots.json
+        robots_json_path = "docs/data/robots.json"
+        robots_list = []
+        if os.path.exists(robots_json_path):
+            try:
+                with open(robots_json_path, 'r', encoding='utf-8') as f:
+                    content = f.read().strip()
+                    if content:
+                        robots_list = json.loads(content)
+                        if not isinstance(robots_list, list):
+                            print(f"Error: robots.json content is not a list. Got: {type(robots_list)}")
+                            return 1
+            except Exception as e:
+                print(f"Error: Could not read existing robots.json. Error: {e}")
+                return 1
+
+        # Find robot to delete to get its name and image path
+        robot_to_delete = None
+        for r in robots_list:
+            if r.get("id") == delete_id:
+                robot_to_delete = r
+                break
+
+        if not robot_to_delete:
+            print(f"Warning: Robot with ID {delete_id} not found in the catalog.")
+            deleted_robot_name = f"Robot #{delete_id}"
+        else:
+            deleted_robot_name = robot_to_delete.get("name", f"Robot #{delete_id}")
+            # Delete image file if it exists
+            img_path = robot_to_delete.get("image", "")
+            if img_path:
+                # The image path is stored as "images/filename.ext" relative to docs/
+                full_img_path = os.path.join("docs", img_path)
+                if os.path.exists(full_img_path) and os.path.isfile(full_img_path):
+                    try:
+                        os.remove(full_img_path)
+                        print(f"Successfully deleted robot image: {full_img_path}")
+                    except Exception as img_err:
+                        print(f"Warning: Could not delete image file {full_img_path}. Error: {img_err}")
+
+        # Filter out the robot to delete
+        robots_list = [r for r in robots_list if r.get("id") != delete_id]
+
+        # Save to robots.json
+        with open(robots_json_path, 'w', encoding='utf-8') as f:
+            json.dump(robots_list, f, indent=2, ensure_ascii=False)
+        print(f"Successfully deleted robot: {deleted_robot_name} (ID: {delete_id})")
+
+        # Write output variables for GitHub Actions
+        github_output = os.environ.get('GITHUB_OUTPUT')
+        if github_output:
+            with open(github_output, 'a', encoding='utf-8') as f:
+                f.write(f"robot_name={deleted_robot_name}\n")
+                f.write(f"action_type=delete\n")
+
+        # Close and label the issue
+        if issue_number and issue_number != '0':
+            close_and_label_issue(issue_number)
+
+        return 0
+
+    # Process ADD/UPDATE robot request
     # Parse key-value Markdown fields: - **Key**: Value
     data = {}
     for line in body.split('\n'):
@@ -248,11 +321,12 @@ def main():
         json.dump(robots_list, f, indent=2, ensure_ascii=False)
     print(f"Updated robots.json with: {parsed['name']}")
 
-    # Write output variable for GitHub Actions
+    # Write output variables for GitHub Actions
     github_output = os.environ.get('GITHUB_OUTPUT')
     if github_output:
         with open(github_output, 'a', encoding='utf-8') as f:
             f.write(f"robot_name={parsed['name']}\n")
+            f.write(f"action_type=add\n")
 
     # Close and label the issue
     if issue_number and issue_number != '0':

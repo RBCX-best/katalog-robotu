@@ -34,7 +34,7 @@ jobs:
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "docs: add robot ${{ steps.process.outputs.robot_name }} (closes #${{ github.event.issue.number }})"
+          commit_message: "docs: update robot catalog (issue #${{ github.event.issue.number }}) [skip ci]"
           file_pattern: 'docs/data/robots.json docs/images/*'
           commit_user_name: "GitHub Action"
           commit_user_email: "actions@github.com"
@@ -43,9 +43,13 @@ jobs:
       - name: Comment, label and close issue
         run: |
           gh issue edit "$ISSUE_NUMBER" --add-label "zpracovano" --remove-label "schvaleno"
-          gh issue comment "$ISSUE_NUMBER" --body "### Robot **${{ steps.process.outputs.robot_name }}** byl úspěšně schválen a přidán do katalogu! 🎉
+          if [ "${{ steps.process.outputs.action_type }}" = "delete" ]; then
+            gh issue comment "$ISSUE_NUMBER" --body "### Robot **${{ steps.process.outputs.robot_name }}** byl úspěšně odstraněn z katalogu. 🗑️"
+          else
+            gh issue comment "$ISSUE_NUMBER" --body "### Robot **${{ steps.process.outputs.robot_name }}** byl úspěšně schválen a přidán do katalogu! 🎉
 
-          Můžete se na něj podívat na našem webu. Odkaz na tuto issue byl uložen k záznamu robotů."
+            Můžete se na něj podívat na našem webu. Odkaz na tuto issue byl uložen k záznamu robotů."
+          fi
           gh issue close "$ISSUE_NUMBER"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

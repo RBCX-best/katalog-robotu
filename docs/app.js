@@ -2,6 +2,7 @@
 let robotsData = [];
 let filteredRobots = [];
 let allHardwareTags = [];
+let adminMode = false;
 
 // DOM Elements
 const robotsGrid = document.getElementById('robots-grid');
@@ -73,6 +74,35 @@ function initApp() {
     btnClear.addEventListener('click', resetFilters);
     btnEmptyReset.addEventListener('click', resetFilters);
     
+    // Admin Toggle functionality
+    const btnAdminToggle = document.getElementById('btn-admin-toggle');
+    const adminStatusText = document.getElementById('admin-status-text');
+    const adminIcon = document.getElementById('admin-icon');
+
+    if (btnAdminToggle) {
+        btnAdminToggle.addEventListener('click', () => {
+            adminMode = !adminMode;
+            if (adminMode) {
+                btnAdminToggle.classList.remove('bg-slate-900/60', 'border-slate-800', 'text-slate-400', 'hover:bg-slate-800', 'hover:text-slate-200');
+                btnAdminToggle.classList.add('bg-red-500/10', 'border-red-500/30', 'text-red-400', 'hover:bg-red-500/20', 'hover:text-red-300');
+                adminStatusText.textContent = 'Admin: Aktivní';
+                if (adminIcon) {
+                    adminIcon.classList.remove('text-slate-500');
+                    adminIcon.classList.add('text-red-400');
+                }
+            } else {
+                btnAdminToggle.classList.remove('bg-red-500/10', 'border-red-500/30', 'text-red-400', 'hover:bg-red-500/20', 'hover:text-red-300');
+                btnAdminToggle.classList.add('bg-slate-900/60', 'border-slate-800', 'text-slate-400', 'hover:bg-slate-800', 'hover:text-slate-200');
+                adminStatusText.textContent = 'Admin režim';
+                if (adminIcon) {
+                    adminIcon.classList.remove('text-red-400');
+                    adminIcon.classList.add('text-slate-500');
+                }
+            }
+            renderCards(); // Redraw cards to add/remove delete buttons
+        });
+    }
+
     // Hide loading indicator
     loadingState.classList.add('hidden');
 }
@@ -295,7 +325,28 @@ function renderCards() {
                     ${hwBadgesHtml}
                 </div>
                 
-                <!-- Action Buttons -->
+        // Action Buttons
+        let actionButtonsHtml = '';
+        if (adminMode) {
+            actionButtonsHtml = `
+                <div class="grid grid-cols-5 gap-2">
+                    <a href="${robot.github}" target="_blank" 
+                       class="col-span-3 flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-880/80 hover:bg-brand-600 hover:text-white text-slate-200 text-xs font-semibold rounded-xl border border-slate-700/50 hover:border-brand-500/40 transition-all">
+                        <i data-lucide="github" class="w-4 h-4"></i>
+                        Repozitář
+                    </a>
+                    <button onclick="requestDeleteRobot(${robot.id}, '${robot.name.replace(/'/g, "\\'")}')" title="Odstranit robota z katalogu"
+                       class="col-span-1 flex items-center justify-center p-2.5 bg-red-950/40 hover:bg-red-900/30 text-red-400 hover:text-red-300 rounded-xl border border-red-900/30 hover:border-red-900/50 transition-all">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                    <a href="${robot.issue_url}" target="_blank" title="Zobrazit schvalovací issue"
+                       class="col-span-1 flex items-center justify-center p-2.5 bg-slate-850/60 hover:bg-slate-800 text-slate-400 hover:text-slate-200 rounded-xl border border-slate-800/80 hover:border-slate-700/80 transition-all">
+                        <i data-lucide="external-link" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            `;
+        } else {
+            actionButtonsHtml = `
                 <div class="grid grid-cols-5 gap-2">
                     <a href="${robot.github}" target="_blank" 
                        class="col-span-4 flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-800/80 hover:bg-brand-600 hover:text-white text-slate-200 text-sm font-semibold rounded-xl border border-slate-700/50 hover:border-brand-500/40 transition-all">
@@ -307,6 +358,51 @@ function renderCards() {
                         <i data-lucide="external-link" class="w-4 h-4"></i>
                     </a>
                 </div>
+            `;
+        }
+        
+        card.innerHTML = `
+            <!-- Image Container -->
+            <div class="relative aspect-[4/3] overflow-hidden bg-slate-950/60">
+                <img src="${robot.image}" alt="${robot.name}" 
+                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                     onerror="this.onerror=null; this.src='https://placehold.co/600x400/0d1127/a78bfa?text=${fallbackText}';">
+            </div>
+            
+            <!-- Content -->
+            <div class="p-6 flex flex-col flex-grow">
+                <!-- Year & Competition (side-by-side) -->
+                <div class="flex flex-wrap items-center gap-x-2 text-xs text-slate-450 mb-2.5 font-medium">
+                    <span class="flex items-center gap-1 text-brand-400">
+                        <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+                        ${robot.year}
+                    </span>
+                    <span class="text-slate-700">•</span>
+                    <span class="flex items-center gap-1 text-blue-400 truncate max-w-[160px]" title="${robot.competition}">
+                        <i data-lucide="trophy" class="w-3.5 h-3.5"></i>
+                        ${robot.competition}
+                    </span>
+                </div>
+                
+                <!-- Robot Name -->
+                <h3 class="font-outfit text-xl font-bold text-white mb-2 group-hover:text-brand-300 transition-colors">
+                    ${robot.name}
+                </h3>
+                
+                <!-- Team members -->
+                <div class="mb-4">
+                    <p class="text-slate-350 text-sm leading-relaxed">
+                        <span class="text-slate-500 font-semibold font-sans">Tým:</span> ${robot.team}
+                    </p>
+                </div>
+                
+                <!-- Hardware Tags (at the bottom, before buttons) -->
+                <div class="mt-auto mb-6">
+                    ${hwBadgesHtml}
+                </div>
+                
+                <!-- Action Buttons -->
+                ${actionButtonsHtml}
             </div>
         `;
         
@@ -316,6 +412,17 @@ function renderCards() {
     // Re-initialize Lucide icons for newly appended cards
     lucide.createIcons();
 }
+
+// Global function for handling admin deletion requests
+window.requestDeleteRobot = function(id, name) {
+    const confirmDelete = confirm(`Opravdu chcete požádat o odstranění robota "${name}" (ID: ${id})?\n\nBudete přesměrováni na předvyplněný GitHub Issue.`);
+    if (confirmDelete) {
+        const title = `Smazat robota: ${name} (ID: ${id})`;
+        const body = `### Odstranění robota\n- **ID**: ${id}\n- **Název**: ${name}\n\nProsím o schválení odstranění tohoto robota z katalogu.`;
+        const repoUrl = "https://github.com/RBCX-best/katalog-robotu/issues/new";
+        window.location.href = `${repoUrl}?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`;
+    }
+};
 
 // Start loading process when DOM is ready
 document.addEventListener('DOMContentLoaded', fetchRobots);
