@@ -433,7 +433,7 @@ function renderCards() {
         card.innerHTML = `
             <!-- Image Container -->
             <div class="relative aspect-[4/3] overflow-hidden bg-slate-950/60">
-                <img src="${robot.image}" alt="${robot.name}" 
+                <img src="${robot.image}" alt="${robot.name}" loading="lazy" 
                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                      onerror="this.onerror=null; this.src='https://placehold.co/600x400/0d1127/a78bfa?text=${fallbackText}';">
             </div>
