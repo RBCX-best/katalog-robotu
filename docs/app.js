@@ -179,7 +179,13 @@ function getTagColorClass(tag) {
         case 'sledování čáry':
         case 'line-following modul': return 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20';
         case 'led diody': return 'bg-pink-500/10 text-pink-400 border-pink-500/20';
-        default: return 'bg-slate-800/60 text-slate-400 border-slate-700/50';
+        case 'ultrazvukovy senzor':
+        case 'ultrazvukový senzor':
+        case 'ultrazvuk': return 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20';
+        case 'kola': return 'bg-sky-500/10 text-sky-400 border-sky-500/20';
+        case 'pásy':
+        case 'pasy': return 'bg-orange-500/10 text-orange-400 border-orange-500/20';
+        default: return 'bg-violet-500/10 text-violet-400 border-violet-500/20'; // Sleek default for new custom tags
     }
 }
 
@@ -239,7 +245,7 @@ function renderCards() {
         let hwBadgesHtml = '';
         if (robot.hardware && robot.hardware.length > 0) {
             hwBadgesHtml = `
-                <div class="flex flex-wrap gap-1.5 mb-4">
+                <div class="flex flex-wrap gap-1.5">
                     ${robot.hardware.map(tag => `
                         <span class="px-2 py-0.5 text-[10px] font-bold rounded-md border ${getTagColorClass(tag)}">
                             ${tag}
@@ -255,40 +261,42 @@ function renderCards() {
                 <img src="${robot.image}" alt="${robot.name}" 
                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                      onerror="this.onerror=null; this.src='https://placehold.co/600x400/0d1127/a78bfa?text=${fallbackText}';">
-                <div class="absolute top-3 right-3 flex flex-col gap-1.5 items-end">
-                    <span class="px-2.5 py-1 bg-brand-500/90 backdrop-blur-md text-white text-xs font-bold rounded-lg border border-brand-400/30 shadow-lg">
-                        ${robot.year}
-                    </span>
-                </div>
             </div>
             
             <!-- Content -->
             <div class="p-6 flex flex-col flex-grow">
-                <div class="flex items-center gap-1.5 text-xs text-blue-400 font-semibold uppercase tracking-wider mb-2">
-                    <i data-lucide="trophy" class="w-3.5 h-3.5"></i>
-                    <span class="truncate">${robot.competition}</span>
+                <!-- Year & Competition (side-by-side) -->
+                <div class="flex flex-wrap items-center gap-x-2 text-xs text-slate-450 mb-2.5 font-medium">
+                    <span class="flex items-center gap-1 text-brand-400">
+                        <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+                        ${robot.year}
+                    </span>
+                    <span class="text-slate-700">•</span>
+                    <span class="flex items-center gap-1 text-blue-400 truncate max-w-[160px]" title="${robot.competition}">
+                        <i data-lucide="trophy" class="w-3.5 h-3.5"></i>
+                        ${robot.competition}
+                    </span>
                 </div>
                 
+                <!-- Robot Name -->
                 <h3 class="font-outfit text-xl font-bold text-white mb-2 group-hover:text-brand-300 transition-colors">
                     ${robot.name}
                 </h3>
                 
-                <!-- Hardware Tags -->
-                ${hwBadgesHtml}
-                
                 <!-- Team members -->
-                <div class="mb-6 flex-grow">
-                    <div class="text-xs text-slate-500 font-medium mb-1 flex items-center gap-1">
-                        <i data-lucide="users" class="w-3.5 h-3.5"></i>
-                        Členové týmu
-                    </div>
-                    <p class="text-slate-300 text-sm font-light leading-relaxed">
-                        ${robot.team}
+                <div class="mb-4">
+                    <p class="text-slate-350 text-sm leading-relaxed">
+                        <span class="text-slate-500 font-semibold font-sans">Tým:</span> ${robot.team}
                     </p>
                 </div>
                 
+                <!-- Hardware Tags (at the bottom, before buttons) -->
+                <div class="mt-auto mb-6">
+                    ${hwBadgesHtml}
+                </div>
+                
                 <!-- Action Buttons -->
-                <div class="grid grid-cols-5 gap-2 mt-auto">
+                <div class="grid grid-cols-5 gap-2">
                     <a href="${robot.github}" target="_blank" 
                        class="col-span-4 flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-800/80 hover:bg-brand-600 hover:text-white text-slate-200 text-sm font-semibold rounded-xl border border-slate-700/50 hover:border-brand-500/40 transition-all">
                         <i data-lucide="github" class="w-4 h-4"></i>

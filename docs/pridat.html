@@ -70,7 +70,7 @@
                 Přidat robota do katalogu
             </h1>
             <p class="text-slate-400 text-base font-light">
-                Vyplňte formulář níže. Po kliknutí na odeslat budete přesměrováni na GitHub Issue, kde pouze nahrajete fotku a potvrdíte odeslání.
+                Vyplňte formulář níže. Po kliknutí na tlačítko budete přesměrováni na GitHub Issue, kde pouze nahrajete fotku a potvrdíte odeslání.
             </p>
         </header>
 
@@ -80,7 +80,7 @@
                 
                 <!-- Robot Name -->
                 <div>
-                    <label for="robot-name" class="block text-slate-350 text-sm font-semibold text-slate-300 mb-2">
+                    <label for="robot-name" class="block text-sm font-semibold text-slate-300 mb-2">
                         Název robota <span class="text-red-400">*</span>
                     </label>
                     <input type="text" id="robot-name" required placeholder="např. Antenka"
@@ -145,7 +145,7 @@
 
                 <!-- Team Members (Dynamic List) -->
                 <div>
-                    <label class="block text-sm font-semibold text-slate-300 mb-2">
+                    <label class="block text-sm font-semibold text-slate-355 mb-2">
                         Členové týmu <span class="text-red-400">*</span>
                     </label>
                     
@@ -153,61 +153,63 @@
                         <div class="flex gap-2">
                             <input type="text" required placeholder="Jméno a příjmení člena"
                                 class="team-member-input block w-full px-4 py-3 bg-dark-input border border-slate-800 rounded-xl text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500/80 transition-all font-medium">
-                            <button type="button" class="btn-remove-member hidden p-3 bg-slate-900 hover:bg-red-900/40 text-slate-400 hover:text-red-400 border border-slate-800 hover:border-red-900/50 rounded-xl transition-all">
-                                <i data-lucide="trash-2" class="w-5 h-5"></i>
+                            <button type="button" id="btn-add-member"
+                                class="p-3 bg-brand-600 hover:bg-brand-500 text-white rounded-xl transition-all flex items-center justify-center min-w-[48px]"
+                                title="Přidat dalšího člena">
+                                <i data-lucide="plus" class="w-5 h-5"></i>
                             </button>
                         </div>
                     </div>
-                    
-                    <button type="button" id="btn-add-member"
-                        class="mt-3 inline-flex items-center gap-2 text-sm font-bold text-brand-400 hover:text-brand-300 transition-colors">
-                        <i data-lucide="plus" class="w-4 h-4"></i>
-                        Přidat člena týmu
-                    </button>
                 </div>
 
-                <!-- Hardware Tags (Checkboxes) -->
+                <!-- Hardware Tags (Checkboxes & Custom Tags) -->
                 <div>
                     <label class="block text-sm font-semibold text-slate-300 mb-3">
                         Hardware vybavení (Tagy)
                     </label>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                        <label class="flex items-center gap-3 p-3.5 bg-dark-input border border-slate-850 hover:border-slate-800 rounded-xl cursor-pointer select-none transition-all">
+                    
+                    <!-- Default Checkboxes Grid -->
+                    <div id="hardware-checkboxes-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-4">
+                        <label class="flex items-center gap-3 p-3.5 bg-dark-input border border-slate-800 hover:border-slate-700/50 rounded-xl cursor-pointer select-none transition-all">
                             <input type="checkbox" name="hardware" value="Kamera" class="w-4 h-4 rounded text-brand-600 bg-slate-900 border-slate-800 focus:ring-brand-500/30">
                             <span class="text-sm font-medium text-slate-350">Kamera</span>
                         </label>
-                        <label class="flex items-center gap-3 p-3.5 bg-dark-input border border-slate-850 hover:border-slate-800 rounded-xl cursor-pointer select-none transition-all">
+                        <label class="flex items-center gap-3 p-3.5 bg-dark-input border border-slate-800 hover:border-slate-700/50 rounded-xl cursor-pointer select-none transition-all">
                             <input type="checkbox" name="hardware" value="Barevný senzor" class="w-4 h-4 rounded text-brand-600 bg-slate-900 border-slate-800 focus:ring-brand-500/30">
                             <span class="text-sm font-medium text-slate-350">Barevný senzor</span>
                         </label>
-                        <label class="flex items-center gap-3 p-3.5 bg-dark-input border border-slate-850 hover:border-slate-800 rounded-xl cursor-pointer select-none transition-all">
+                        <label class="flex items-center gap-3 p-3.5 bg-dark-input border border-slate-800 hover:border-slate-700/50 rounded-xl cursor-pointer select-none transition-all">
                             <input type="checkbox" name="hardware" value="Lidar" class="w-4 h-4 rounded text-brand-600 bg-slate-900 border-slate-800 focus:ring-brand-500/30">
                             <span class="text-sm font-medium text-slate-350">Lidar</span>
                         </label>
-                        <label class="flex items-center gap-3 p-3.5 bg-dark-input border border-slate-850 hover:border-slate-800 rounded-xl cursor-pointer select-none transition-all">
+                        <label class="flex items-center gap-3 p-3.5 bg-dark-input border border-slate-800 hover:border-slate-700/50 rounded-xl cursor-pointer select-none transition-all">
                             <input type="checkbox" name="hardware" value="Ultrazvukový senzor" class="w-4 h-4 rounded text-brand-600 bg-slate-900 border-slate-800 focus:ring-brand-500/30">
-                            <span class="text-sm font-medium text-slate-350">Ultrazvukový senzor</span>
+                            <span class="text-sm font-medium text-slate-350">Ultrazvuk</span>
                         </label>
-                        <label class="flex items-center gap-3 p-3.5 bg-dark-input border border-slate-850 hover:border-slate-800 rounded-xl cursor-pointer select-none transition-all">
-                            <input type="checkbox" name="hardware" value="Infračervený senzor" class="w-4 h-4 rounded text-brand-600 bg-slate-900 border-slate-800 focus:ring-brand-500/30">
-                            <span class="text-sm font-medium text-slate-350">Infračervený senzor</span>
+                        <label class="flex items-center gap-3 p-3.5 bg-dark-input border border-slate-800 hover:border-slate-700/50 rounded-xl cursor-pointer select-none transition-all">
+                            <input type="checkbox" name="hardware" value="Kola" class="w-4 h-4 rounded text-brand-600 bg-slate-900 border-slate-800 focus:ring-brand-500/30">
+                            <span class="text-sm font-medium text-slate-350">Kola</span>
                         </label>
-                        <label class="flex items-center gap-3 p-3.5 bg-dark-input border border-slate-850 hover:border-slate-800 rounded-xl cursor-pointer select-none transition-all">
-                            <input type="checkbox" name="hardware" value="Line-following modul" class="w-4 h-4 rounded text-brand-600 bg-slate-900 border-slate-800 focus:ring-brand-500/30">
-                            <span class="text-sm font-medium text-slate-350">Sledování čáry</span>
+                        <label class="flex items-center gap-3 p-3.5 bg-dark-input border border-slate-800 hover:border-slate-700/50 rounded-xl cursor-pointer select-none transition-all">
+                            <input type="checkbox" name="hardware" value="Pásy" class="w-4 h-4 rounded text-brand-600 bg-slate-900 border-slate-800 focus:ring-brand-500/30">
+                            <span class="text-sm font-medium text-slate-350">Pásy</span>
                         </label>
-                        <label class="flex items-center gap-3 p-3.5 bg-dark-input border border-slate-850 hover:border-slate-800 rounded-xl cursor-pointer select-none transition-all">
-                            <input type="checkbox" name="hardware" value="Chápadlo / Kleště" class="w-4 h-4 rounded text-brand-600 bg-slate-900 border-slate-800 focus:ring-brand-500/30">
-                            <span class="text-sm font-medium text-slate-350">Chápadlo / Kleště</span>
-                        </label>
-                        <label class="flex items-center gap-3 p-3.5 bg-dark-input border border-slate-850 hover:border-slate-800 rounded-xl cursor-pointer select-none transition-all">
-                            <input type="checkbox" name="hardware" value="Gyroskop" class="w-4 h-4 rounded text-brand-600 bg-slate-900 border-slate-800 focus:ring-brand-500/30">
-                            <span class="text-sm font-medium text-slate-350">Gyroskop</span>
-                        </label>
-                        <label class="flex items-center gap-3 p-3.5 bg-dark-input border border-slate-850 hover:border-slate-800 rounded-xl cursor-pointer select-none transition-all">
-                            <input type="checkbox" name="hardware" value="LED diody" class="w-4 h-4 rounded text-brand-600 bg-slate-900 border-slate-800 focus:ring-brand-500/30">
-                            <span class="text-sm font-medium text-slate-350">LED diody</span>
-                        </label>
+                    </div>
+
+                    <!-- Custom Tags Container -->
+                    <div id="custom-tags-container" class="flex flex-wrap gap-2 mb-4">
+                        <!-- Custom tags will be dynamically added here -->
+                    </div>
+
+                    <!-- Add Custom Tag Input -->
+                    <div class="flex gap-2 max-w-md">
+                        <input type="text" id="custom-hardware-input" placeholder="Jiný hardware (např. Teploměr)..."
+                            class="block w-full px-4 py-2.5 bg-dark-input border border-slate-800 rounded-xl text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500/80 transition-all font-medium">
+                        <button type="button" id="btn-add-custom-hardware"
+                            class="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-brand-400 hover:text-brand-300 border border-slate-800 rounded-xl transition-all font-bold flex items-center justify-center gap-1">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                            Přidat
+                        </button>
                     </div>
                 </div>
 
@@ -216,7 +218,7 @@
                     <button type="submit" 
                         class="w-full py-4 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold rounded-2xl transition-all duration-300 shadow-lg shadow-brand-600/20 flex items-center justify-center gap-2 hover:scale-[1.01]">
                         <i data-lucide="github" class="w-5 h-5"></i>
-                        Vytvořit Issue na GitHubu
+                        Pokračovat na GitHub
                     </button>
                 </div>
             </form>
@@ -236,6 +238,11 @@
         
         const teamContainer = document.getElementById('team-members-container');
         const btnAddMember = document.getElementById('btn-add-member');
+
+        const customTagsContainer = document.getElementById('custom-tags-container');
+        const customHardwareInput = document.getElementById('custom-hardware-input');
+        const btnAddCustomHardware = document.getElementById('btn-add-custom-hardware');
+        const customTagsList = [];
 
         // Dynamically toggle custom text inputs
         robotYear.addEventListener('change', () => {
@@ -261,11 +268,11 @@
         // Dynamic Team Members List
         btnAddMember.addEventListener('click', () => {
             const memberDiv = document.createElement('div');
-            memberDiv.className = 'flex gap-2 animate-fade-in';
+            memberDiv.className = 'flex gap-2 animate-fade-in mt-3';
             memberDiv.innerHTML = `
                 <input type="text" required placeholder="Jméno a příjmení člena"
                     class="team-member-input block w-full px-4 py-3 bg-dark-input border border-slate-800 rounded-xl text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500/80 transition-all font-medium">
-                <button type="button" class="btn-remove-member p-3 bg-slate-900 hover:bg-red-900/40 text-slate-400 hover:text-red-400 border border-slate-800 hover:border-red-900/50 rounded-xl transition-all">
+                <button type="button" class="btn-remove-member p-3 bg-slate-900 hover:bg-red-900/40 text-slate-400 hover:text-red-400 border border-slate-800 hover:border-red-900/50 rounded-xl transition-all flex items-center justify-center min-w-[48px]">
                     <i data-lucide="trash-2" class="w-5 h-5"></i>
                 </button>
             `;
@@ -277,26 +284,59 @@
             // Handle removal
             memberDiv.querySelector('.btn-remove-member').addEventListener('click', () => {
                 memberDiv.remove();
-                toggleRemoveButtons();
             });
-            
-            toggleRemoveButtons();
         });
 
-        function toggleRemoveButtons() {
-            const buttons = teamContainer.querySelectorAll('.btn-remove-member');
-            const firstRemoveButton = teamContainer.querySelector('.btn-remove-member');
-            
-            // If only one field is left, hide its delete button
-            if (buttons.length <= 0) {
-                // Do nothing
-            } else if (teamContainer.children.length === 1) {
-                teamContainer.children[0].querySelector('.btn-remove-member').classList.add('hidden');
-            } else {
-                // Show all
-                teamContainer.querySelectorAll('.btn-remove-member').forEach(btn => btn.classList.remove('hidden'));
-            }
+        // Custom Hardware Tags Management
+        function renderCustomTags() {
+            customTagsContainer.innerHTML = '';
+            customTagsList.forEach((tag, idx) => {
+                const tagElement = document.createElement('span');
+                tagElement.className = 'inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-500/10 text-brand-300 border border-brand-500/30 rounded-xl text-xs font-semibold';
+                tagElement.innerHTML = `
+                    <span>${tag}</span>
+                    <button type="button" class="hover:text-red-400 transition-colors" onclick="removeCustomTag(${idx})">
+                        <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                    </button>
+                `;
+                customTagsContainer.appendChild(tagElement);
+            });
+            lucide.createIcons();
         }
+
+        window.removeCustomTag = function(idx) {
+            customTagsList.splice(idx, 1);
+            renderCustomTags();
+        };
+
+        btnAddCustomHardware.addEventListener('click', () => {
+            const val = customHardwareInput.value.trim();
+            if (val) {
+                // If tag is already present in custom tags, don't duplicate
+                if (customTagsList.some(t => t.toLowerCase() === val.toLowerCase())) {
+                    customHardwareInput.value = '';
+                    return;
+                }
+                // Check if it matches a default checkbox
+                const defaultCheckboxes = Array.from(document.querySelectorAll('input[name="hardware"]'));
+                const matchedCb = defaultCheckboxes.find(cb => cb.value.toLowerCase() === val.toLowerCase());
+                if (matchedCb) {
+                    matchedCb.checked = true;
+                } else {
+                    customTagsList.push(val);
+                    renderCustomTags();
+                }
+                customHardwareInput.value = '';
+            }
+        });
+
+        // Add item on Enter key in custom tag input
+        customHardwareInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                btnAddCustomHardware.click();
+            }
+        });
 
         // Initialize selectors by downloading robots.json
         async function loadExistingFilters() {
@@ -311,7 +351,6 @@
                         const option = document.createElement('option');
                         option.value = year;
                         option.textContent = year;
-                        // Insert before the last option (which is "custom_year")
                         robotYear.insertBefore(option, robotYear.lastElementChild);
                     });
 
@@ -321,7 +360,6 @@
                         const option = document.createElement('option');
                         option.value = comp;
                         option.textContent = comp;
-                        // Insert before the last option (which is "custom_competition")
                         robotCompetition.insertBefore(option, robotCompetition.lastElementChild);
                     });
                 }
@@ -362,10 +400,17 @@
             });
             const team = teamMembers.join(', ');
 
-            // Extract Hardware Tags
+            // Extract Hardware Tags (Default Checked + Custom List)
             const hwCheckboxes = document.querySelectorAll('input[name="hardware"]:checked');
             const hwTags = [];
             hwCheckboxes.forEach(cb => hwTags.push(cb.value));
+            
+            customTagsList.forEach(tag => {
+                if (!hwTags.includes(tag)) {
+                    hwTags.push(tag);
+                }
+            });
+            
             const hardware = hwTags.join(', ') || 'Žádné specifické vybavení';
 
             // Construct Markdown Body

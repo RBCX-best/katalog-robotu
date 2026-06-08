@@ -111,8 +111,14 @@ def main():
         return 1
 
     # Parse key-value Markdown fields: - **Key**: Value
-    matches = re.findall(r'-\s*\*\*(.*?)\*\*:\s*(.*)', body)
-    data = {key.strip(): value.strip() for key, value in matches}
+    data = {}
+    for line in body.split('\n'):
+        line = line.strip()
+        match = re.match(r'^[-*]\s*\*\*(.*?)\*\*:\s*(.*)$', line)
+        if match:
+            key = match.group(1).strip()
+            value = match.group(2).strip()
+            data[key] = value
 
     # Map form Czech field names to our internal JSON keys
     field_mapping = {
@@ -128,7 +134,7 @@ def main():
     for czech_key, field_name in field_mapping.items():
         parsed[field_name] = data.get(czech_key, '').strip()
 
-    # Validate mandatory fields (excluding hardware since it's optional in spirit, but we want to know if missing)
+    # Validate mandatory fields
     required_fields = ["name", "year", "competition", "team", "github"]
     missing = [f for f in required_fields if not parsed.get(f)]
     if missing:
@@ -136,7 +142,12 @@ def main():
         print(f"Parsed keys from markdown matches: {data}")
         return 1
 
-    # Parse hardware tags into list
+    # Parse team members (comma-separated list, clean spaces)
+    raw_team = parsed.get("team", "")
+    team_members = [member.strip() for member in raw_team.split(",") if member.strip()]
+    cleaned_team = ", ".join(team_members)
+
+    # Parse hardware tags (comma-separated list, clean spaces)
     raw_hardware = parsed.get("hardware", "")
     if raw_hardware and raw_hardware != "Žádné specifické vybavení":
         hardware_tags = [tag.strip() for tag in raw_hardware.split(",") if tag.strip()]
@@ -197,8 +208,12 @@ def main():
                 content = f.read().strip()
                 if content:
                     robots_list = json.loads(content)
+                    if not isinstance(robots_list, list):
+                        print(f"Error: robots.json content is not a list. Got: {type(robots_list)}")
+                        return 1
         except Exception as e:
-            print(f"Warning: Could not read existing robots.json, starting fresh. Error: {e}")
+            print(f"Error: Could not read existing robots.json. Error: {e}")
+            return 1
 
     # Build new robot record
     new_robot = {
@@ -206,7 +221,7 @@ def main():
         "name": parsed["name"],
         "year": parsed["year"],
         "competition": parsed["competition"],
-        "team": parsed["team"],
+        "team": cleaned_team,
         "github": parsed["github"],
         "hardware": hardware_tags,
         "image": f"images/{image_filename}",
@@ -222,7 +237,6 @@ def main():
     # Sort robots by year (descending) and then name (ascending)
     def get_sort_key(r):
         year_str = str(r.get("year", ""))
-        # Extract first 4 digits or set to empty
         match = re.search(r'\d{4}', year_str)
         year = int(match.group(0)) if match else 0
         return (-year, r.get("name", "").lower())
