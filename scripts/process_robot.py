@@ -263,26 +263,64 @@ def main():
     
     try:
         with urllib.request.urlopen(req) as response:
-            content_type = response.info().get('Content-Type', '')
-            # Determine extension from content-type header, default to .png
-            ext = '.png'
-            if 'image/jpeg' in content_type or 'image/jpg' in content_type:
-                ext = '.jpg'
-            elif 'image/png' in content_type:
-                ext = '.png'
-            elif 'image/webp' in content_type:
-                ext = '.webp'
-            elif 'image/gif' in content_type:
-                ext = '.gif'
+            image_data = response.read()
             
             # Format filename using name slug and issue number
             slug = slugify(parsed["name"]) or "robot"
-            image_filename = f"{slug}_{issue_number}{ext}"
+            image_filename = f"{slug}_{issue_number}.webp"
             image_path = os.path.join("docs/images", image_filename)
             
-            with open(image_path, 'wb') as out_file:
-                out_file.write(response.read())
-            print(f"Image successfully downloaded and saved to: {image_path}")
+            # Save downloaded image temporarily to process
+            temp_path = image_path + ".tmp"
+            with open(temp_path, 'wb') as out_file:
+                out_file.write(image_data)
+                
+            try:
+                from PIL import Image
+                with Image.open(temp_path) as img:
+                    # Convert mode to RGB or RGBA depending on transparency
+                    if img.mode in ("RGBA", "LA") or (img.mode == "P" and "transparency" in img.info):
+                        if img.mode != "RGBA":
+                            img = img.convert("RGBA")
+                    elif img.mode != "RGB":
+                        img = img.convert("RGB")
+                    
+                    # Resize if too large (e.g., max width/height of 1000px)
+                    max_size = 1000
+                    width, height = img.size
+                    if width > max_size or height > max_size:
+                        if width > height:
+                            new_height = int(height * (max_size / width))
+                            new_width = max_size
+                        else:
+                            new_width = int(width * (max_size / height))
+                            new_height = max_size
+                        img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
+                        
+                    # Save as WebP with optimized quality
+                    img.save(image_path, "WEBP", quality=80)
+                print(f"Image successfully converted, optimized to WebP, and saved to: {image_path}")
+            except Exception as img_err:
+                print(f"Pillow optimization failed: {img_err}. Saving original image instead.")
+                content_type = response.info().get('Content-Type', '')
+                fallback_ext = '.png'
+                if 'image/jpeg' in content_type or 'image/jpg' in content_type:
+                    fallback_ext = '.jpg'
+                elif 'image/webp' in content_type:
+                    fallback_ext = '.webp'
+                elif 'image/gif' in content_type:
+                    fallback_ext = '.gif'
+                
+                image_filename = f"{slug}_{issue_number}{fallback_ext}"
+                image_path = os.path.join("docs/images", image_filename)
+                os.rename(temp_path, image_path)
+                print(f"Saved original fallback image to: {image_path}")
+            finally:
+                if os.path.exists(temp_path):
+                    try:
+                        os.remove(temp_path)
+                    except:
+                        pass
             
     except Exception as e:
         print(f"Error downloading image: {e}")
