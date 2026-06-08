@@ -28,6 +28,8 @@ jobs:
           ISSUE_BODY: ${{ github.event.issue.body }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           ISSUE_URL: ${{ github.event.issue.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
 
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
@@ -38,8 +40,9 @@ jobs:
           commit_user_email: "actions@github.com"
           commit_author: "GitHub Action <actions@github.com>"
 
-      - name: Comment and close issue
+      - name: Comment, label and close issue
         run: |
+          gh issue edit "$ISSUE_NUMBER" --add-label "zpracovano" --remove-label "schvaleno"
           gh issue comment "$ISSUE_NUMBER" --body "### Robot **${{ steps.process.outputs.robot_name }}** byl úspěšně schválen a přidán do katalogu! 🎉
 
           Můžete se na něj podívat na našem webu. Odkaz na tuto issue byl uložen k záznamu robotů."

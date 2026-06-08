@@ -63,11 +63,19 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
         
         <!-- Header -->
-        <header class="text-center mb-16 animate-fade-in">
+        <header class="text-center mb-16 animate-fade-in relative">
+            <div class="absolute top-0 right-0 hidden md:block">
+                <a href="pridat.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-600/10 hover:bg-brand-600/20 border border-brand-500/35 text-brand-300 hover:text-white text-sm font-bold rounded-xl transition-all shadow-lg shadow-brand-500/5">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                    Přidat robota
+                </a>
+            </div>
+            
             <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-300 text-sm font-semibold mb-6 hover:bg-brand-500/15 transition-all duration-300">
                 <i data-lucide="cpu" class="w-4 h-4 text-brand-400"></i>
                 Robotický katalog
             </div>
+            
             <h1 class="font-outfit text-4xl sm:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-brand-300 bg-clip-text text-transparent mb-6">
                 Naše Robotická Rodina
             </h1>
@@ -115,48 +123,61 @@
 
         <!-- Filters Section -->
         <section class="glass-panel p-6 rounded-2xl border border-slate-800/40 mb-12 animate-fade-in delay-200">
-            <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
-                
-                <!-- Search bar -->
-                <div class="relative w-full md:w-96">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
-                        <i data-lucide="search" class="w-5 h-5"></i>
+            <div class="flex flex-col gap-6">
+                <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+                    
+                    <!-- Search bar -->
+                    <div class="relative w-full md:w-96">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                            <i data-lucide="search" class="w-5 h-5"></i>
+                        </div>
+                        <input type="text" id="search-input" placeholder="Hledat podle jména, člena, soutěže..." 
+                            class="block w-full pl-10 pr-4 py-3 bg-dark-input border border-slate-800/80 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500/80 transition-all font-medium">
                     </div>
-                    <input type="text" id="search-input" placeholder="Hledat robota nebo člena týmu..." 
-                        class="block w-full pl-10 pr-4 py-3 bg-dark-input border border-slate-800/80 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500/80 transition-all font-medium">
+                    
+                    <!-- Dropdown filters -->
+                    <div class="flex flex-wrap gap-4 w-full md:w-auto items-center justify-end">
+                        <!-- Year filter -->
+                        <div class="relative w-full sm:w-48">
+                            <select id="filter-year" 
+                                class="appearance-none block w-full px-4 py-3 bg-dark-input border border-slate-800/80 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500/80 transition-all font-medium cursor-pointer">
+                                <option value="">Všechny roky</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-500">
+                                <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                            </div>
+                        </div>
+
+                        <!-- Competition filter -->
+                        <div class="relative w-full sm:w-48">
+                            <select id="filter-competition" 
+                                class="appearance-none block w-full px-4 py-3 bg-dark-input border border-slate-800/80 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500/80 transition-all font-medium cursor-pointer">
+                                <option value="">Všechny soutěže</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-500">
+                                <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                            </div>
+                        </div>
+
+                        <!-- Clear filter button -->
+                        <button id="btn-clear" class="w-full sm:w-auto px-5 py-3 rounded-xl border border-slate-800/60 hover:bg-slate-850 hover:text-white transition-all text-slate-400 font-semibold flex items-center justify-center gap-2 hover:border-slate-700/80">
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                            Reset
+                        </button>
+                    </div>
+
                 </div>
                 
-                <!-- Dropdown filters -->
-                <div class="flex flex-wrap gap-4 w-full md:w-auto items-center justify-end">
-                    <!-- Year filter -->
-                    <div class="relative w-full sm:w-48">
-                        <select id="filter-year" 
-                            class="appearance-none block w-full px-4 py-3 bg-dark-input border border-slate-800/80 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500/80 transition-all font-medium cursor-pointer">
-                            <option value="">Všechny roky</option>
-                        </select>
-                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-500">
-                            <i data-lucide="chevron-down" class="w-4 h-4"></i>
-                        </div>
+                <!-- Hardware Filter Tags Checkboxes Container -->
+                <div class="pt-4 border-t border-slate-800/30">
+                    <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                        <i data-lucide="sliders" class="w-3.5 h-3.5 text-brand-400"></i>
+                        Filtrovat podle hardware:
+                    </span>
+                    <div id="hardware-filters" class="flex flex-wrap gap-2.5">
+                        <!-- Dynamic checkboxes will be injected by JS -->
                     </div>
-
-                    <!-- Competition filter -->
-                    <div class="relative w-full sm:w-48">
-                        <select id="filter-competition" 
-                            class="appearance-none block w-full px-4 py-3 bg-dark-input border border-slate-800/80 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500/80 transition-all font-medium cursor-pointer">
-                            <option value="">Všechny soutěže</option>
-                        </select>
-                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-500">
-                            <i data-lucide="chevron-down" class="w-4 h-4"></i>
-                        </div>
-                    </div>
-
-                    <!-- Clear filter button -->
-                    <button id="btn-clear" class="w-full sm:w-auto px-5 py-3 rounded-xl border border-slate-800/60 hover:bg-slate-850 hover:text-white transition-all text-slate-400 font-semibold flex items-center justify-center gap-2 hover:border-slate-700/80">
-                        <i data-lucide="x" class="w-4 h-4"></i>
-                        Reset
-                    </button>
                 </div>
-
             </div>
         </section>
 
@@ -191,7 +212,7 @@
             <div class="relative z-10">
                 <div class="text-center max-w-2xl mx-auto mb-12">
                     <h2 class="font-outfit text-2xl sm:text-3xl font-extrabold text-white mb-4">Jak přidat robota do katalogu?</h2>
-                    <p class="text-slate-400 font-light">Celý katalog funguje plně automatizovaně prostřednictvím GitHub Issues a GitHub Actions.</p>
+                    <p class="text-slate-400 font-light">Celý katalog funguje plně automatizovaně prostřednictvím nového webového formuláře a GitHub Actions.</p>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative">
@@ -203,8 +224,8 @@
                         <div class="w-16 h-16 rounded-2xl bg-brand-500/10 text-brand-400 border border-brand-500/20 flex items-center justify-center font-outfit text-xl font-bold mb-4 shadow-lg shadow-brand-500/5">
                             1
                         </div>
-                        <h4 class="font-outfit text-base font-bold text-slate-200 mb-2">Vytvořte Issue</h4>
-                        <p class="text-slate-400 text-sm font-light">Otevřete nové Issue v repozitáři a zvolte šablonu <strong>Nový robot</strong>.</p>
+                        <h4 class="font-outfit text-base font-bold text-slate-200 mb-2">Vyplňte formulář</h4>
+                        <p class="text-slate-400 text-sm font-light">Klikněte na tlačítko níže a zadejte všechny údaje o vašem robotovi a jeho hardware.</p>
                     </div>
 
                     <!-- Step 2 -->
@@ -212,8 +233,8 @@
                         <div class="w-16 h-16 rounded-2xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 flex items-center justify-center font-outfit text-xl font-bold mb-4 shadow-lg shadow-indigo-500/5">
                             2
                         </div>
-                        <h4 class="font-outfit text-base font-bold text-slate-200 mb-2">Vyplňte formulář</h4>
-                        <p class="text-slate-400 text-sm font-light">Zadejte název, soutěž, tým a přetáhněte fotku robota přímo do formuláře.</p>
+                        <h4 class="font-outfit text-base font-bold text-slate-200 mb-2">Nahrajte fotku</h4>
+                        <p class="text-slate-400 text-sm font-light">Formulář vás přesměruje na GitHub. Přetáhněte do textového pole fotografii a vytvořte Issue.</p>
                     </div>
 
                     <!-- Step 3 -->
@@ -222,7 +243,7 @@
                             3
                         </div>
                         <h4 class="font-outfit text-base font-bold text-slate-200 mb-2">Schválení</h4>
-                        <p class="text-slate-400 text-sm font-light">Administrátor kroužku zkontroluje Issue a přidá label <span class="px-1.5 py-0.5 bg-green-500/10 text-green-400 border border-green-500/25 rounded text-xs font-semibold">schvaleno</span>.</p>
+                        <p class="text-slate-400 text-sm font-light">Vedoucí kroužku zkontroluje nahrané informace a k danému Issue přidá štítek <span class="px-1.5 py-0.5 bg-green-500/10 text-green-400 border border-green-500/25 rounded text-xs font-semibold">schvaleno</span>.</p>
                     </div>
 
                     <!-- Step 4 -->
@@ -231,12 +252,12 @@
                             4
                         </div>
                         <h4 class="font-outfit text-base font-bold text-slate-200 mb-2">Automatický web</h4>
-                        <p class="text-slate-400 text-sm font-light">GitHub Action stáhne fotku, uloží data a robot se ihned zobrazí zde na webu!</p>
+                        <p class="text-slate-400 text-sm font-light">Akce stáhne fotku, aktualizuje JSON, issue označí jako <span class="px-1.5 py-0.5 bg-blue-500/10 text-blue-400 border border-blue-500/25 rounded text-xs font-semibold">zpracovano</span> a web se ihned překreslí!</p>
                     </div>
                 </div>
 
                 <div class="text-center mt-12">
-                    <a href="https://github.com/RBCX-best/katalog-robotu/issues/new/choose" target="_blank" 
+                    <a href="pridat.html" 
                         class="inline-flex items-center gap-2 px-6 py-3.5 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold rounded-xl transition-all duration-300 shadow-lg shadow-brand-600/20 hover:scale-[1.02]">
                         <i data-lucide="plus-circle" class="w-5 h-5"></i>
                         Přidat našeho robota

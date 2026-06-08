@@ -1,6 +1,7 @@
 // Application state
 let robotsData = [];
 let filteredRobots = [];
+let allHardwareTags = [];
 
 // DOM Elements
 const robotsGrid = document.getElementById('robots-grid');
@@ -9,6 +10,7 @@ const emptyState = document.getElementById('empty-state');
 const searchInput = document.getElementById('search-input');
 const filterYear = document.getElementById('filter-year');
 const filterCompetition = document.getElementById('filter-competition');
+const hardwareFiltersContainer = document.getElementById('hardware-filters');
 const btnClear = document.getElementById('btn-clear');
 const btnEmptyReset = document.getElementById('btn-empty-reset');
 
@@ -51,8 +53,14 @@ function initApp() {
     // Populate stats
     updateDashboardStats();
     
+    // Extract hardware tags
+    extractHardwareTags();
+    
     // Populate dropdown options
     populateFilters();
+    
+    // Populate hardware tag filters
+    renderHardwareFilterCheckboxes();
     
     // Perform initial render
     applyFilters();
@@ -80,8 +88,23 @@ function updateDashboardStats() {
     statCompetitions.textContent = uniqueCompetitions.size;
 }
 
+// Extract all unique hardware tags from the robots database
+function extractHardwareTags() {
+    const tagsSet = new Set();
+    robotsData.forEach(robot => {
+        if (robot.hardware && Array.isArray(robot.hardware)) {
+            robot.hardware.forEach(tag => tagsSet.add(tag.trim()));
+        }
+    });
+    allHardwareTags = Array.from(tagsSet).sort((a, b) => a.localeCompare(b));
+}
+
 // Populate the select elements with unique values present in the database
 function populateFilters() {
+    // Clear select elements, keeping the first (default) option
+    filterYear.innerHTML = '<option value="">Všechny roky</option>';
+    filterCompetition.innerHTML = '<option value="">Všechny soutěže</option>';
+
     // Extract unique school years and sort them
     const years = [...new Set(robotsData.map(r => r.year).filter(Boolean))];
     years.sort((a, b) => b.localeCompare(a)); // Sort descending (recent first)
@@ -105,12 +128,59 @@ function populateFilters() {
     });
 }
 
+// Render dynamic checkboxes for each unique hardware tag
+function renderHardwareFilterCheckboxes() {
+    hardwareFiltersContainer.innerHTML = '';
+    
+    if (allHardwareTags.length === 0) {
+        hardwareFiltersContainer.innerHTML = '<span class="text-xs text-slate-500 italic">Žádné tagy nebyly nalezeny v databázi.</span>';
+        return;
+    }
+    
+    allHardwareTags.forEach(tag => {
+        const label = document.createElement('label');
+        label.className = "flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 border border-slate-800 hover:border-slate-700/60 rounded-xl cursor-pointer select-none transition-all text-xs font-semibold text-slate-350";
+        label.innerHTML = `
+            <input type="checkbox" name="hardware-filter" value="${tag}" class="w-3.5 h-3.5 rounded text-brand-600 bg-slate-950 border-slate-850 focus:ring-brand-500/20">
+            <span>${tag}</span>
+        `;
+        
+        // Add event listener to checkbox
+        label.querySelector('input').addEventListener('change', applyFilters);
+        hardwareFiltersContainer.appendChild(label);
+    });
+}
+
 // Reset all filtering inputs
 function resetFilters() {
     searchInput.value = '';
     filterYear.value = '';
     filterCompetition.value = '';
+    
+    // Uncheck all hardware filters
+    document.querySelectorAll('input[name="hardware-filter"]').forEach(cb => {
+        cb.checked = false;
+    });
+    
     applyFilters();
+}
+
+// Helper for dynamic coloring of tags
+function getTagColorClass(tag) {
+    switch(tag.toLowerCase()) {
+        case 'kamera': return 'bg-blue-500/10 text-blue-400 border-blue-500/20';
+        case 'lidar': return 'bg-purple-500/10 text-purple-400 border-purple-500/20';
+        case 'barevny senzor':
+        case 'barevný senzor': return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+        case 'gyroskop': return 'bg-amber-500/10 text-amber-400 border-amber-500/20';
+        case 'chapadlo / kleste':
+        case 'chápadlo / kleště': return 'bg-rose-500/10 text-rose-400 border-rose-500/20';
+        case 'sledovani cary':
+        case 'sledování čáry':
+        case 'line-following modul': return 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20';
+        case 'led diody': return 'bg-pink-500/10 text-pink-400 border-pink-500/20';
+        default: return 'bg-slate-800/60 text-slate-400 border-slate-700/50';
+    }
 }
 
 // Core filtering logic
@@ -118,6 +188,9 @@ function applyFilters() {
     const searchVal = removeAccents(searchInput.value.trim().toLowerCase());
     const selectedYear = filterYear.value;
     const selectedComp = filterCompetition.value;
+    
+    // Get list of checked hardware tags
+    const checkedTags = Array.from(document.querySelectorAll('input[name="hardware-filter"]:checked')).map(cb => cb.value);
     
     filteredRobots = robotsData.filter(robot => {
         // Search text matching (name, competition, team members)
@@ -130,7 +203,10 @@ function applyFilters() {
         const yearMatch = !selectedYear || robot.year === selectedYear;
         const compMatch = !selectedComp || robot.competition === selectedComp;
         
-        return textMatch && yearMatch && compMatch;
+        // Hardware tag matching (AND-logic: robot must have all selected tags)
+        const tagsMatch = checkedTags.every(tag => robot.hardware && robot.hardware.includes(tag));
+        
+        return textMatch && yearMatch && compMatch && tagsMatch;
     });
     
     renderCards();
@@ -159,6 +235,20 @@ function renderCards() {
         // URL encode robot name for safe fallback URL
         const fallbackText = encodeURIComponent(robot.name);
         
+        // Construct hardware tags badges HTML
+        let hwBadgesHtml = '';
+        if (robot.hardware && robot.hardware.length > 0) {
+            hwBadgesHtml = `
+                <div class="flex flex-wrap gap-1.5 mb-4">
+                    ${robot.hardware.map(tag => `
+                        <span class="px-2 py-0.5 text-[10px] font-bold rounded-md border ${getTagColorClass(tag)}">
+                            ${tag}
+                        </span>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
         card.innerHTML = `
             <!-- Image Container -->
             <div class="relative aspect-[4/3] overflow-hidden bg-slate-950/60">
@@ -179,13 +269,16 @@ function renderCards() {
                     <span class="truncate">${robot.competition}</span>
                 </div>
                 
-                <h3 class="font-outfit text-xl font-bold text-white mb-3 group-hover:text-brand-300 transition-colors">
+                <h3 class="font-outfit text-xl font-bold text-white mb-2 group-hover:text-brand-300 transition-colors">
                     ${robot.name}
                 </h3>
                 
+                <!-- Hardware Tags -->
+                ${hwBadgesHtml}
+                
                 <!-- Team members -->
                 <div class="mb-6 flex-grow">
-                    <div class="text-xs text-slate-555 text-slate-500 font-medium mb-1 flex items-center gap-1">
+                    <div class="text-xs text-slate-500 font-medium mb-1 flex items-center gap-1">
                         <i data-lucide="users" class="w-3.5 h-3.5"></i>
                         Členové týmu
                     </div>

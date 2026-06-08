@@ -13,19 +13,93 @@ def slugify(text):
     return slug.lower()
 
 def extract_image_url(text):
-    # Match markdown format: ![alt_text](url)
+    # 1. Match markdown format: ![alt_text](url)
     match = re.search(r'!\[.*?\]\((https?://[^\s)]+)\)', text)
     if match:
         return match.group(1)
-    # Match HTML format: <img src="url" ...>
+    
+    # 2. Match HTML format: <img src="url" ...>
     match = re.search(r'<img\s+[^>]*src=["\'](https?://[^"\']+)["\']', text)
     if match:
         return match.group(1)
-    # Match raw url format
-    match = re.search(r'(https?://[^\s]+)', text)
-    if match:
-        return match.group(1)
+    
+    # 3. Match raw GitHub asset/attachment URLs or URLs with image extensions.
+    # Ignore the repository URL under "- **GitHub**:"
+    lines = text.split('\n')
+    for line in lines:
+        if line.strip().startswith("- **GitHub"):
+            continue
+        urls = re.findall(r'(https?://[^\s)]+)', line)
+        for url in urls:
+            is_github_upload = "/assets/" in url or "/user-attachments/" in url or "/uploads/" in url
+            has_img_ext = any(url.lower().endswith(ext) for ext in ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp'])
+            if is_github_upload or has_img_ext:
+                return url
     return None
+
+def close_and_label_issue(issue_number):
+    token = os.environ.get('GITHUB_TOKEN') or os.environ.get('GH_TOKEN')
+    repo = os.environ.get('GITHUB_REPOSITORY')
+    
+    # Try using gh CLI first (pre-installed and pre-authenticated on GitHub runner if token is set)
+    try:
+        import subprocess
+        # Check if gh CLI is available
+        subprocess.run(["gh", "--version"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+        print("Closing issue using GitHub CLI...")
+        # Add label 'zpracovano' and remove 'schvaleno'
+        subprocess.run(["gh", "issue", "edit", str(issue_number), "--add-label", "zpracovano", "--remove-label", "schvaleno"], check=True)
+        # Close issue
+        subprocess.run(["gh", "issue", "close", str(issue_number)], check=True)
+        print(f"Successfully closed and labeled issue #{issue_number} via GitHub CLI.")
+        return True
+    except Exception as cli_error:
+        print(f"GitHub CLI method failed or not available: {cli_error}")
+        
+    # Fall back to direct REST API call if gh CLI is not available
+    if not token or not repo:
+        print("Warning: GITHUB_TOKEN/GH_TOKEN or GITHUB_REPOSITORY not set. Cannot use REST API to close issue.")
+        return False
+        
+    print("Closing issue using GitHub REST API...")
+    url = f"https://api.github.com/repos/{repo}/issues/{issue_number}"
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Accept": "application/vnd.github+json",
+        "Content-Type": "application/json",
+        "User-Agent": "Python-urllib"
+    }
+    
+    try:
+        # Fetch current labels to preserve others and modify 'schvaleno' / 'zpracovano'
+        req = urllib.request.Request(url, headers=headers)
+        with urllib.request.urlopen(req) as response:
+            issue_data = json.loads(response.read().decode('utf-8'))
+            current_labels = [l['name'] for l in issue_data.get('labels', [])]
+            
+        new_labels = [l for l in current_labels if l != 'schvaleno']
+        if 'zpracovano' not in new_labels:
+            new_labels.append('zpracovano')
+            
+        data = {
+            "state": "closed",
+            "labels": new_labels
+        }
+        
+        req = urllib.request.Request(
+            url,
+            data=json.dumps(data).encode('utf-8'),
+            headers=headers,
+            method='PATCH'
+        )
+        with urllib.request.urlopen(req) as response:
+            if response.status == 200:
+                print(f"Successfully closed and labeled issue #{issue_number} via REST API.")
+                return True
+    except Exception as api_error:
+        print(f"GitHub REST API method failed: {api_error}")
+        
+    return False
 
 def main():
     body = os.environ.get('ISSUE_BODY', '')
@@ -36,51 +110,47 @@ def main():
         print("Error: ISSUE_BODY environment variable is empty or not set.")
         return 1
 
-    # Split markdown by headings (lines starting with ###)
-    sections = re.split(r'\n*###\s+', body)
-    data = {}
-    for section in sections:
-        if not section.strip():
-            continue
-        lines = section.strip().split('\n')
-        header = lines[0].strip()
-        content = '\n'.join(lines[1:]).strip()
-        data[header] = content
+    # Parse key-value Markdown fields: - **Key**: Value
+    matches = re.findall(r'-\s*\*\*(.*?)\*\*:\s*(.*)', body)
+    data = {key.strip(): value.strip() for key, value in matches}
 
-    # Map form field names to our internal JSON keys
+    # Map form Czech field names to our internal JSON keys
     field_mapping = {
-        "Název robota": "name",
+        "Název": "name",
         "Rok": "year",
         "Soutěž": "competition",
-        "Členové týmu": "team",
-        "Odkaz na GitHub repozitář robota": "github",
-        "Fotografie robota": "photo"
+        "Tým": "team",
+        "GitHub": "github",
+        "Hardware": "hardware"
     }
 
     parsed = {}
-    for header, content in data.items():
-        for template_header, field_name in field_mapping.items():
-            if template_header.lower() in header.lower():
-                parsed[field_name] = content
-                break
+    for czech_key, field_name in field_mapping.items():
+        parsed[field_name] = data.get(czech_key, '').strip()
 
-    # Validate mandatory fields
-    required_fields = ["name", "year", "competition", "team", "github", "photo"]
+    # Validate mandatory fields (excluding hardware since it's optional in spirit, but we want to know if missing)
+    required_fields = ["name", "year", "competition", "team", "github"]
     missing = [f for f in required_fields if not parsed.get(f)]
     if missing:
         print(f"Error: Missing required fields: {', '.join(missing)}")
-        print(f"Parsed fields: {parsed}")
+        print(f"Parsed keys from markdown matches: {data}")
         return 1
+
+    # Parse hardware tags into list
+    raw_hardware = parsed.get("hardware", "")
+    if raw_hardware and raw_hardware != "Žádné specifické vybavení":
+        hardware_tags = [tag.strip() for tag in raw_hardware.split(",") if tag.strip()]
+    else:
+        hardware_tags = []
 
     # Ensure output directories exist
     os.makedirs("docs/data", exist_ok=True)
     os.makedirs("docs/images", exist_ok=True)
 
-    # Download image
-    photo_content = parsed["photo"]
-    img_url = extract_image_url(photo_content)
+    # Search the entire body for an image URL
+    img_url = extract_image_url(body)
     if not img_url:
-        print(f"Error: Could not extract image URL from photo field content: '{photo_content}'")
+        print("Error: Could not find any markdown image tag (or img tag) in the issue body.")
         return 1
 
     print(f"Downloading image from: {img_url}")
@@ -138,6 +208,7 @@ def main():
         "competition": parsed["competition"],
         "team": parsed["team"],
         "github": parsed["github"],
+        "hardware": hardware_tags,
         "image": f"images/{image_filename}",
         "issue_url": issue_url
     }
@@ -168,6 +239,10 @@ def main():
     if github_output:
         with open(github_output, 'a', encoding='utf-8') as f:
             f.write(f"robot_name={parsed['name']}\n")
+
+    # Close and label the issue
+    if issue_number and issue_number != '0':
+        close_and_label_issue(issue_number)
 
     return 0
 
