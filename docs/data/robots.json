@@ -40,7 +40,8 @@
       "Ultrazvukový senzor",
       "Smart servo",
       "Display",
-      "IR"
+      "IR",
+      "Gyroskop"
     ],
     "image": "images/cheesecake_5.png",
     "issue_url": "https://github.com/RBCX-best/katalog-robotu/issues/5"
