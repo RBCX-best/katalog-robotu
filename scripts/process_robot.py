@@ -36,51 +36,47 @@ def main():
         print("Error: ISSUE_BODY environment variable is empty or not set.")
         return 1
 
-    # Split markdown by headings (lines starting with ###)
-    sections = re.split(r'\n*###\s+', body)
-    data = {}
-    for section in sections:
-        if not section.strip():
-            continue
-        lines = section.strip().split('\n')
-        header = lines[0].strip()
-        content = '\n'.join(lines[1:]).strip()
-        data[header] = content
+    # Parse key-value Markdown fields: - **Key**: Value
+    matches = re.findall(r'-\s*\*\*(.*?)\*\*:\s*(.*)', body)
+    data = {key.strip(): value.strip() for key, value in matches}
 
-    # Map form field names to our internal JSON keys
+    # Map form Czech field names to our internal JSON keys
     field_mapping = {
-        "Název robota": "name",
+        "Název": "name",
         "Rok": "year",
         "Soutěž": "competition",
-        "Členové týmu": "team",
-        "Odkaz na GitHub repozitář robota": "github",
-        "Fotografie robota": "photo"
+        "Tým": "team",
+        "GitHub": "github",
+        "Hardware": "hardware"
     }
 
     parsed = {}
-    for header, content in data.items():
-        for template_header, field_name in field_mapping.items():
-            if template_header.lower() in header.lower():
-                parsed[field_name] = content
-                break
+    for czech_key, field_name in field_mapping.items():
+        parsed[field_name] = data.get(czech_key, '').strip()
 
-    # Validate mandatory fields
-    required_fields = ["name", "year", "competition", "team", "github", "photo"]
+    # Validate mandatory fields (excluding hardware since it's optional in spirit, but we want to know if missing)
+    required_fields = ["name", "year", "competition", "team", "github"]
     missing = [f for f in required_fields if not parsed.get(f)]
     if missing:
         print(f"Error: Missing required fields: {', '.join(missing)}")
-        print(f"Parsed fields: {parsed}")
+        print(f"Parsed keys from markdown matches: {data}")
         return 1
+
+    # Parse hardware tags into list
+    raw_hardware = parsed.get("hardware", "")
+    if raw_hardware and raw_hardware != "Žádné specifické vybavení":
+        hardware_tags = [tag.strip() for tag in raw_hardware.split(",") if tag.strip()]
+    else:
+        hardware_tags = []
 
     # Ensure output directories exist
     os.makedirs("docs/data", exist_ok=True)
     os.makedirs("docs/images", exist_ok=True)
 
-    # Download image
-    photo_content = parsed["photo"]
-    img_url = extract_image_url(photo_content)
+    # Search the entire body for an image URL
+    img_url = extract_image_url(body)
     if not img_url:
-        print(f"Error: Could not extract image URL from photo field content: '{photo_content}'")
+        print("Error: Could not find any markdown image tag (or img tag) in the issue body.")
         return 1
 
     print(f"Downloading image from: {img_url}")
@@ -138,6 +134,7 @@ def main():
         "competition": parsed["competition"],
         "team": parsed["team"],
         "github": parsed["github"],
+        "hardware": hardware_tags,
         "image": f"images/{image_filename}",
         "issue_url": issue_url
     }

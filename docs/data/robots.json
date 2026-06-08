@@ -6,6 +6,12 @@
     "competition": "RBCX-BEST",
     "team": "Jan Novák, Petr Svoboda",
     "github": "https://github.com/RBCX-best/katalog-robotu",
+    "hardware": [
+      "Kamera",
+      "Barevný senzor",
+      "Gyroskop",
+      "LED diody"
+    ],
     "image": "images/foton_robot.png",
     "issue_url": "https://github.com/RBCX-best/katalog-robotu/issues/1"
   },
@@ -16,6 +22,11 @@
     "competition": "Robotiáda 2025",
     "team": "Eva Černá, Martin Kovář",
     "github": "https://github.com/RBCX-best/katalog-robotu",
+    "hardware": [
+      "Chápadlo / Kleště",
+      "Gyroskop",
+      "Line-following modul"
+    ],
     "image": "images/antenka_robot.png",
     "issue_url": "https://github.com/RBCX-best/katalog-robotu/issues/2"
   }
