@@ -135,11 +135,22 @@ function populateFilters() {
     filterYear.innerHTML = '<option value="">Všechny roky</option>';
     filterCompetition.innerHTML = '<option value="">Všechny soutěže</option>';
 
-    // Extract unique school years and sort them
-    const years = [...new Set(robotsData.map(r => r.year).filter(Boolean))];
-    years.sort((a, b) => b.localeCompare(a)); // Sort descending (recent first)
+    // Generate school years dynamically from 2015 to current calendar year
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
     
-    years.forEach(year => {
+    const generatedYears = [];
+    const baseYear = 2015; // base anchor at 2015
+    for (let y = currentYear; y >= baseYear; y--) {
+        generatedYears.push(String(y));
+    }
+    
+    // Also include any other years in the database
+    const dataYears = robotsData.map(r => r.year).filter(Boolean);
+    const allYearsSet = new Set([...generatedYears, ...dataYears]);
+    const sortedYears = Array.from(allYearsSet).sort((a, b) => b.localeCompare(a));
+    
+    sortedYears.forEach(year => {
         const option = document.createElement('option');
         option.value = year;
         option.textContent = year;
