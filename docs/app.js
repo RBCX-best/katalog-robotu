@@ -285,53 +285,13 @@ function renderCards() {
             `;
         }
         
-        card.innerHTML = `
-            <!-- Image Container -->
-            <div class="relative aspect-[4/3] overflow-hidden bg-slate-950/60">
-                <img src="${robot.image}" alt="${robot.name}" 
-                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                     onerror="this.onerror=null; this.src='https://placehold.co/600x400/0d1127/a78bfa?text=${fallbackText}';">
-            </div>
-            
-            <!-- Content -->
-            <div class="p-6 flex flex-col flex-grow">
-                <!-- Year & Competition (side-by-side) -->
-                <div class="flex flex-wrap items-center gap-x-2 text-xs text-slate-450 mb-2.5 font-medium">
-                    <span class="flex items-center gap-1 text-brand-400">
-                        <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
-                        ${robot.year}
-                    </span>
-                    <span class="text-slate-700">•</span>
-                    <span class="flex items-center gap-1 text-blue-400 truncate max-w-[160px]" title="${robot.competition}">
-                        <i data-lucide="trophy" class="w-3.5 h-3.5"></i>
-                        ${robot.competition}
-                    </span>
-                </div>
-                
-                <!-- Robot Name -->
-                <h3 class="font-outfit text-xl font-bold text-white mb-2 group-hover:text-brand-300 transition-colors">
-                    ${robot.name}
-                </h3>
-                
-                <!-- Team members -->
-                <div class="mb-4">
-                    <p class="text-slate-350 text-sm leading-relaxed">
-                        <span class="text-slate-500 font-semibold font-sans">Tým:</span> ${robot.team}
-                    </p>
-                </div>
-                
-                <!-- Hardware Tags (at the bottom, before buttons) -->
-                <div class="mt-auto mb-6">
-                    ${hwBadgesHtml}
-                </div>
-                
         // Action Buttons
         let actionButtonsHtml = '';
         if (adminMode) {
             actionButtonsHtml = `
                 <div class="grid grid-cols-5 gap-2">
                     <a href="${robot.github}" target="_blank" 
-                       class="col-span-3 flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-880/80 hover:bg-brand-600 hover:text-white text-slate-200 text-xs font-semibold rounded-xl border border-slate-700/50 hover:border-brand-500/40 transition-all">
+                       class="col-span-3 flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-80/80 hover:bg-brand-600 hover:text-white text-slate-200 text-xs font-semibold rounded-xl border border-slate-700/50 hover:border-brand-500/40 transition-all">
                         <i data-lucide="github" class="w-4 h-4"></i>
                         Repozitář
                     </a>
