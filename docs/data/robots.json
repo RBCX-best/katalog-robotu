@@ -1,5 +1,19 @@
 [
   {
+    "id": 3,
+    "name": "Falkon1",
+    "year": "2028",
+    "competition": "Kybernoid",
+    "team": "Nikola Zeman, Búřil Pavel, Kolofík Tomáš",
+    "github": "https://github.com/ZemanNz/RBCX-VYSKOV-25",
+    "hardware": [
+      "Barevný senzor",
+      "Smart servo"
+    ],
+    "image": "images/falkon1_3.jpg",
+    "issue_url": "https://github.com/RBCX-best/katalog-robotu/issues/3"
+  },
+  {
     "id": 1,
     "name": "Brno_kkk",
     "year": "2025/2026",
