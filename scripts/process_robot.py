@@ -200,6 +200,8 @@ def main():
         "Soutěž": "competition",
         "Tým": "team",
         "GitHub": "github",
+        "Vývojová deska": "board",
+        "Jazyk": "language",
         "Hardware": "hardware"
     }
 
@@ -220,9 +222,23 @@ def main():
     team_members = [member.strip() for member in raw_team.split(",") if member.strip()]
     cleaned_team = ", ".join(team_members)
 
+    # Parse board tags (comma-separated list, clean spaces)
+    raw_board = parsed.get("board", "")
+    if raw_board and raw_board not in ("Žádná specifická deska", "None"):
+        board_tags = [tag.strip() for tag in raw_board.split(",") if tag.strip()]
+    else:
+        board_tags = []
+
+    # Parse language tags (comma-separated list, clean spaces)
+    raw_language = parsed.get("language", "")
+    if raw_language and raw_language not in ("Žádný specifický jazyk", "None"):
+        language_tags = [tag.strip() for tag in raw_language.split(",") if tag.strip()]
+    else:
+        language_tags = []
+
     # Parse hardware tags (comma-separated list, clean spaces)
     raw_hardware = parsed.get("hardware", "")
-    if raw_hardware and raw_hardware != "Žádné specifické vybavení":
+    if raw_hardware and raw_hardware not in ("Žádné specifické vybavení", "None"):
         hardware_tags = [tag.strip() for tag in raw_hardware.split(",") if tag.strip()]
     else:
         hardware_tags = []
@@ -296,6 +312,8 @@ def main():
         "competition": parsed["competition"],
         "team": cleaned_team,
         "github": parsed["github"],
+        "board": board_tags,
+        "language": language_tags,
         "hardware": hardware_tags,
         "image": f"images/{image_filename}",
         "issue_url": issue_url

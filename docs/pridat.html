@@ -159,6 +159,91 @@
                                 <i data-lucide="plus" class="w-5 h-5"></i>
                             </button>
                         </div>
+                   <!-- Vývojová deska / platforma (Checkboxes & Custom Tags) -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-300 mb-3 flex items-center gap-1.5">
+                        <i data-lucide="cpu" class="w-4 h-4 text-brand-400"></i>
+                        Vývojová deska / platforma
+                    </label>
+                    
+                    <!-- Default Checkboxes Grid -->
+                    <div id="board-checkboxes-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-4">
+                        <label class="flex items-center gap-3 p-3.5 bg-dark-input border border-slate-800 hover:border-slate-700/50 rounded-xl cursor-pointer select-none transition-all">
+                            <input type="checkbox" name="board" value="ESP32" class="w-4 h-4 rounded text-brand-600 bg-slate-900 border-slate-800 focus:ring-brand-500/30">
+                            <span class="text-sm font-medium text-slate-350">ESP32</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3.5 bg-dark-input border border-slate-800 hover:border-slate-700/50 rounded-xl cursor-pointer select-none transition-all">
+                            <input type="checkbox" name="board" value="RBCX" class="w-4 h-4 rounded text-brand-600 bg-slate-900 border-slate-800 focus:ring-brand-500/30">
+                            <span class="text-sm font-medium text-slate-350">RBCX</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3.5 bg-dark-input border border-slate-800 hover:border-slate-700/50 rounded-xl cursor-pointer select-none transition-all">
+                            <input type="checkbox" name="board" value="RBC" class="w-4 h-4 rounded text-brand-600 bg-slate-900 border-slate-800 focus:ring-brand-500/30">
+                            <span class="text-sm font-medium text-slate-350">RBC</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3.5 bg-dark-input border border-slate-800 hover:border-slate-700/50 rounded-xl cursor-pointer select-none transition-all">
+                            <input type="checkbox" name="board" value="Lego Mindstorms" class="w-4 h-4 rounded text-brand-600 bg-slate-900 border-slate-800 focus:ring-brand-500/30">
+                            <span class="text-sm font-medium text-slate-350">Lego Mindstorms</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3.5 bg-dark-input border border-slate-800 hover:border-slate-700/50 rounded-xl cursor-pointer select-none transition-all">
+                            <input type="checkbox" name="board" value="Robůtek" class="w-4 h-4 rounded text-brand-600 bg-slate-900 border-slate-800 focus:ring-brand-500/30">
+                            <span class="text-sm font-medium text-slate-350">Robůtek</span>
+                        </label>
+                    </div>
+
+                    <!-- Custom Board Tags Container -->
+                    <div id="custom-board-tags-container" class="flex flex-wrap gap-2 mb-4">
+                        <!-- Custom tags will be dynamically added here -->
+                    </div>
+
+                    <!-- Add Custom Board Input -->
+                    <div class="flex gap-2 max-w-md">
+                        <input type="text" id="custom-board-input" placeholder="Jiná deska/platforma (např. Arduino)..."
+                            class="block w-full px-4 py-2.5 bg-dark-input border border-slate-800 rounded-xl text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500/80 transition-all font-medium">
+                        <button type="button" id="btn-add-custom-board"
+                            class="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-brand-400 hover:text-brand-300 border border-slate-800 rounded-xl transition-all font-bold flex items-center justify-center gap-1">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                            Přidat
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Programovací jazyk (Checkboxes & Custom Tags) -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-300 mb-3 flex items-center gap-1.5">
+                        <i data-lucide="code-2" class="w-4 h-4 text-brand-400"></i>
+                        Programovací jazyk
+                    </label>
+                    
+                    <!-- Default Checkboxes Grid -->
+                    <div id="language-checkboxes-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-4">
+                        <label class="flex items-center gap-3 p-3.5 bg-dark-input border border-slate-800 hover:border-slate-700/50 rounded-xl cursor-pointer select-none transition-all">
+                            <input type="checkbox" name="language" value="C++" class="w-4 h-4 rounded text-brand-600 bg-slate-900 border-slate-800 focus:ring-brand-500/30">
+                            <span class="text-sm font-medium text-slate-350">C++</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3.5 bg-dark-input border border-slate-800 hover:border-slate-700/50 rounded-xl cursor-pointer select-none transition-all">
+                            <input type="checkbox" name="language" value="Python" class="w-4 h-4 rounded text-brand-600 bg-slate-900 border-slate-800 focus:ring-brand-500/30">
+                            <span class="text-sm font-medium text-slate-350">Python</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3.5 bg-dark-input border border-slate-800 hover:border-slate-700/50 rounded-xl cursor-pointer select-none transition-all">
+                            <input type="checkbox" name="language" value="Grafické (bloky)" class="w-4 h-4 rounded text-brand-600 bg-slate-900 border-slate-800 focus:ring-brand-500/30">
+                            <span class="text-sm font-medium text-slate-350">Grafické (bloky)</span>
+                        </label>
+                    </div>
+
+                    <!-- Custom Language Tags Container -->
+                    <div id="custom-language-tags-container" class="flex flex-wrap gap-2 mb-4">
+                        <!-- Custom tags will be dynamically added here -->
+                    </div>
+
+                    <!-- Add Custom Language Input -->
+                    <div class="flex gap-2 max-w-md">
+                        <input type="text" id="custom-language-input" placeholder="Jiný jazyk (např. Rust)..."
+                            class="block w-full px-4 py-2.5 bg-dark-input border border-slate-800 rounded-xl text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500/80 transition-all font-medium">
+                        <button type="button" id="btn-add-custom-language"
+                            class="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-brand-400 hover:text-brand-300 border border-slate-800 rounded-xl transition-all font-bold flex items-center justify-center gap-1">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                            Přidat
+                        </button>
                     </div>
                 </div>
 
@@ -243,6 +328,16 @@
         const customHardwareInput = document.getElementById('custom-hardware-input');
         const btnAddCustomHardware = document.getElementById('btn-add-custom-hardware');
         const customTagsList = [];
+
+        const customBoardTagsContainer = document.getElementById('custom-board-tags-container');
+        const customBoardInput = document.getElementById('custom-board-input');
+        const btnAddCustomBoard = document.getElementById('btn-add-custom-board');
+        const customBoardTagsList = [];
+
+        const customLanguageTagsContainer = document.getElementById('custom-language-tags-container');
+        const customLanguageInput = document.getElementById('custom-language-input');
+        const btnAddCustomLanguage = document.getElementById('btn-add-custom-language');
+        const customLanguageTagsList = [];
 
         // Dynamically toggle custom text inputs
         robotYear.addEventListener('change', () => {
@@ -338,6 +433,102 @@
             }
         });
 
+        // Custom Board Tags Management
+        function renderCustomBoardTags() {
+            customBoardTagsContainer.innerHTML = '';
+            customBoardTagsList.forEach((tag, idx) => {
+                const tagElement = document.createElement('span');
+                tagElement.className = 'inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-500/10 text-brand-300 border border-brand-500/30 rounded-xl text-xs font-semibold';
+                tagElement.innerHTML = `
+                    <span>${tag}</span>
+                    <button type="button" class="hover:text-red-400 transition-colors" onclick="removeCustomBoardTag(${idx})">
+                        <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                    </button>
+                `;
+                customBoardTagsContainer.appendChild(tagElement);
+            });
+            lucide.createIcons();
+        }
+
+        window.removeCustomBoardTag = function(idx) {
+            customBoardTagsList.splice(idx, 1);
+            renderCustomBoardTags();
+        };
+
+        btnAddCustomBoard.addEventListener('click', () => {
+            const val = customBoardInput.value.trim();
+            if (val) {
+                if (customBoardTagsList.some(t => t.toLowerCase() === val.toLowerCase())) {
+                    customBoardInput.value = '';
+                    return;
+                }
+                const defaultCheckboxes = Array.from(document.querySelectorAll('input[name="board"]'));
+                const matchedCb = defaultCheckboxes.find(cb => cb.value.toLowerCase() === val.toLowerCase());
+                if (matchedCb) {
+                    matchedCb.checked = true;
+                } else {
+                    customBoardTagsList.push(val);
+                    renderCustomBoardTags();
+                }
+                customBoardInput.value = '';
+            }
+        });
+
+        customBoardInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                btnAddCustomBoard.click();
+            }
+        });
+
+        // Custom Language Tags Management
+        function renderCustomLanguageTags() {
+            customLanguageTagsContainer.innerHTML = '';
+            customLanguageTagsList.forEach((tag, idx) => {
+                const tagElement = document.createElement('span');
+                tagElement.className = 'inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-500/10 text-brand-300 border border-brand-500/30 rounded-xl text-xs font-semibold';
+                tagElement.innerHTML = `
+                    <span>${tag}</span>
+                    <button type="button" class="hover:text-red-400 transition-colors" onclick="removeCustomLanguageTag(${idx})">
+                        <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                    </button>
+                `;
+                customLanguageTagsContainer.appendChild(tagElement);
+            });
+            lucide.createIcons();
+        }
+
+        window.removeCustomLanguageTag = function(idx) {
+            customLanguageTagsList.splice(idx, 1);
+            renderCustomLanguageTags();
+        };
+
+        btnAddCustomLanguage.addEventListener('click', () => {
+            const val = customLanguageInput.value.trim();
+            if (val) {
+                if (customLanguageTagsList.some(t => t.toLowerCase() === val.toLowerCase())) {
+                    customLanguageInput.value = '';
+                    return;
+                }
+                const defaultCheckboxes = Array.from(document.querySelectorAll('input[name="language"]'));
+                const matchedCb = defaultCheckboxes.find(cb => cb.value.toLowerCase() === val.toLowerCase());
+                if (matchedCb) {
+                    matchedCb.checked = true;
+                } else {
+                    customLanguageTagsList.push(val);
+                    renderCustomLanguageTags();
+                }
+                customLanguageInput.value = '';
+            }
+        });
+
+        customLanguageInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                btnAddCustomLanguage.click();
+            }
+        });
+
         // Initialize selectors by downloading robots.json
         async function loadExistingFilters() {
             try {
@@ -416,17 +607,37 @@
             });
             const team = teamMembers.join(', ');
 
+            // Extract Board Tags (Default Checked + Custom List)
+            const boardCheckboxes = document.querySelectorAll('input[name="board"]:checked');
+            const boardTags = [];
+            boardCheckboxes.forEach(cb => boardTags.push(cb.value));
+            customBoardTagsList.forEach(tag => {
+                if (!boardTags.includes(tag)) {
+                    boardTags.push(tag);
+                }
+            });
+            const board = boardTags.join(', ') || 'Žádná specifická deska';
+
+            // Extract Language Tags (Default Checked + Custom List)
+            const languageCheckboxes = document.querySelectorAll('input[name="language"]:checked');
+            const languageTags = [];
+            languageCheckboxes.forEach(cb => languageTags.push(cb.value));
+            customLanguageTagsList.forEach(tag => {
+                if (!languageTags.includes(tag)) {
+                    languageTags.push(tag);
+                }
+            });
+            const language = languageTags.join(', ') || 'Žádný specifický jazyk';
+
             // Extract Hardware Tags (Default Checked + Custom List)
             const hwCheckboxes = document.querySelectorAll('input[name="hardware"]:checked');
             const hwTags = [];
             hwCheckboxes.forEach(cb => hwTags.push(cb.value));
-            
             customTagsList.forEach(tag => {
                 if (!hwTags.includes(tag)) {
                     hwTags.push(tag);
                 }
             });
-            
             const hardware = hwTags.join(', ') || 'Žádné specifické vybavení';
 
             // Construct Markdown Body
@@ -436,6 +647,8 @@
 - **Soutěž**: ${competition}
 - **Tým**: ${team}
 - **GitHub**: ${github}
+- **Vývojová deska**: ${board}
+- **Jazyk**: ${language}
 - **Hardware**: ${hardware}
 
 ### Fotografie

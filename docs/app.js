@@ -2,6 +2,8 @@
 let robotsData = [];
 let filteredRobots = [];
 let allHardwareTags = [];
+let allBoardTags = [];
+let allLanguageTags = [];
 let adminMode = false;
 
 // DOM Elements
@@ -11,6 +13,8 @@ const emptyState = document.getElementById('empty-state');
 const searchInput = document.getElementById('search-input');
 const filterYear = document.getElementById('filter-year');
 const filterCompetition = document.getElementById('filter-competition');
+const boardFiltersContainer = document.getElementById('board-filters');
+const languageFiltersContainer = document.getElementById('language-filters');
 const hardwareFiltersContainer = document.getElementById('hardware-filters');
 const btnClear = document.getElementById('btn-clear');
 const btnEmptyReset = document.getElementById('btn-empty-reset');
@@ -54,14 +58,16 @@ function initApp() {
     // Populate stats
     updateDashboardStats();
     
-    // Extract hardware tags
-    extractHardwareTags();
+    // Extract tags
+    extractTags();
     
     // Populate dropdown options
     populateFilters();
     
-    // Populate hardware tag filters
-    renderHardwareFilterCheckboxes();
+    // Populate filter checkboxes
+    renderFilterCheckboxes(allHardwareTags, hardwareFiltersContainer, 'hardware-filter');
+    renderFilterCheckboxes(allBoardTags, boardFiltersContainer, 'board-filter');
+    renderFilterCheckboxes(allLanguageTags, languageFiltersContainer, 'language-filter');
     
     // Perform initial render
     applyFilters();
@@ -118,15 +124,27 @@ function updateDashboardStats() {
     statCompetitions.textContent = uniqueCompetitions.size;
 }
 
-// Extract all unique hardware tags from the robots database
-function extractHardwareTags() {
-    const tagsSet = new Set();
+// Extract all unique tags (hardware, boards, languages) from the robots database
+function extractTags() {
+    const hwSet = new Set();
+    const boardSet = new Set();
+    const langSet = new Set();
+    
     robotsData.forEach(robot => {
         if (robot.hardware && Array.isArray(robot.hardware)) {
-            robot.hardware.forEach(tag => tagsSet.add(tag.trim()));
+            robot.hardware.forEach(tag => hwSet.add(tag.trim()));
+        }
+        if (robot.board && Array.isArray(robot.board)) {
+            robot.board.forEach(tag => boardSet.add(tag.trim()));
+        }
+        if (robot.language && Array.isArray(robot.language)) {
+            robot.language.forEach(tag => langSet.add(tag.trim()));
         }
     });
-    allHardwareTags = Array.from(tagsSet).sort((a, b) => a.localeCompare(b));
+    
+    allHardwareTags = Array.from(hwSet).sort((a, b) => a.localeCompare(b));
+    allBoardTags = Array.from(boardSet).sort((a, b) => a.localeCompare(b));
+    allLanguageTags = Array.from(langSet).sort((a, b) => a.localeCompare(b));
 }
 
 // Populate the select elements with unique values present in the database
@@ -169,26 +187,26 @@ function populateFilters() {
     });
 }
 
-// Render dynamic checkboxes for each unique hardware tag
-function renderHardwareFilterCheckboxes() {
-    hardwareFiltersContainer.innerHTML = '';
+// Render dynamic checkboxes for a given set of tags, container, and checkbox name
+function renderFilterCheckboxes(tags, container, cbName) {
+    container.innerHTML = '';
     
-    if (allHardwareTags.length === 0) {
-        hardwareFiltersContainer.innerHTML = '<span class="text-xs text-slate-500 italic">Žádné tagy nebyly nalezeny v databázi.</span>';
+    if (tags.length === 0) {
+        container.innerHTML = '<span class="text-xs text-slate-500 italic">Žádné tagy nebyly nalezeny.</span>';
         return;
     }
     
-    allHardwareTags.forEach(tag => {
+    tags.forEach(tag => {
         const label = document.createElement('label');
         label.className = "flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 border border-slate-800 hover:border-slate-700/60 rounded-xl cursor-pointer select-none transition-all text-xs font-semibold text-slate-350";
         label.innerHTML = `
-            <input type="checkbox" name="hardware-filter" value="${tag}" class="w-3.5 h-3.5 rounded text-brand-600 bg-slate-950 border-slate-850 focus:ring-brand-500/20">
+            <input type="checkbox" name="${cbName}" value="${tag}" class="w-3.5 h-3.5 rounded text-brand-600 bg-slate-950 border-slate-850 focus:ring-brand-500/20">
             <span>${tag}</span>
         `;
         
         // Add event listener to checkbox
         label.querySelector('input').addEventListener('change', applyFilters);
-        hardwareFiltersContainer.appendChild(label);
+        container.appendChild(label);
     });
 }
 
@@ -198,16 +216,49 @@ function resetFilters() {
     filterYear.value = '';
     filterCompetition.value = '';
     
-    // Uncheck all hardware filters
-    document.querySelectorAll('input[name="hardware-filter"]').forEach(cb => {
-        cb.checked = false;
-    });
+    // Uncheck all filters
+    document.querySelectorAll('input[name="hardware-filter"]').forEach(cb => cb.checked = false);
+    document.querySelectorAll('input[name="board-filter"]').forEach(cb => cb.checked = false);
+    document.querySelectorAll('input[name="language-filter"]').forEach(cb => cb.checked = false);
     
     applyFilters();
 }
 
 // Helper for dynamic coloring of tags
-function getTagColorClass(tag) {
+function getTagColorClass(tag, type = 'hardware') {
+    if (type === 'language') {
+        switch(tag.toLowerCase()) {
+            case 'c++':
+            case 'cpp': return 'bg-blue-600/10 text-blue-300 border-blue-500/25';
+            case 'python':
+            case 'py': return 'bg-yellow-500/10 text-yellow-350 border-yellow-500/25';
+            case 'c': return 'bg-sky-650/10 text-sky-300 border-sky-500/25';
+            case 'blocks':
+            case 'bloky':
+            case 'grafické':
+            case 'graficke (bloky)':
+            case 'grafické (bloky)': return 'bg-orange-500/10 text-orange-355 border-orange-500/25';
+            default: return 'bg-emerald-500/10 text-emerald-300 border-emerald-500/25';
+        }
+    }
+    
+    if (type === 'board') {
+        switch(tag.toLowerCase()) {
+            case 'esp32': return 'bg-red-500/10 text-red-300 border-red-500/25';
+            case 'rbcx': return 'bg-purple-500/10 text-purple-300 border-purple-500/25';
+            case 'rbc': return 'bg-indigo-500/10 text-indigo-300 border-indigo-500/25';
+            case 'lego mindstorms':
+            case 'lego mindstorm':
+            case 'lego': return 'bg-orange-500/10 text-orange-300 border-orange-500/25';
+            case 'robutek':
+            case 'robůtek': return 'bg-pink-500/10 text-pink-300 border-pink-500/25';
+            case 'arduino': return 'bg-teal-500/10 text-teal-300 border-teal-500/25';
+            case 'raspberry pi':
+            case 'rpi': return 'bg-rose-600/10 text-rose-300 border-rose-500/25';
+            default: return 'bg-amber-500/10 text-amber-300 border-amber-500/25';
+        }
+    }
+
     switch(tag.toLowerCase()) {
         case 'kamera': return 'bg-blue-500/10 text-blue-400 border-blue-500/20';
         case 'lidar': return 'bg-purple-500/10 text-purple-400 border-purple-500/20';
@@ -226,7 +277,7 @@ function getTagColorClass(tag) {
         case 'kola': return 'bg-sky-500/10 text-sky-400 border-sky-500/20';
         case 'pásy':
         case 'pasy': return 'bg-orange-500/10 text-orange-400 border-orange-500/20';
-        default: return 'bg-violet-500/10 text-violet-400 border-violet-500/20'; // Sleek default for new custom tags
+        default: return 'bg-violet-500/10 text-violet-400 border-violet-500/20';
     }
 }
 
@@ -236,29 +287,40 @@ function applyFilters() {
     const selectedYear = filterYear.value;
     const selectedComp = filterCompetition.value;
     
-    // Get list of checked hardware tags
-    const checkedTags = Array.from(document.querySelectorAll('input[name="hardware-filter"]:checked')).map(cb => cb.value);
+    // Get list of checked tags
+    const checkedHw = Array.from(document.querySelectorAll('input[name="hardware-filter"]:checked')).map(cb => cb.value);
+    const checkedBoards = Array.from(document.querySelectorAll('input[name="board-filter"]:checked')).map(cb => cb.value);
+    const checkedLangs = Array.from(document.querySelectorAll('input[name="language-filter"]:checked')).map(cb => cb.value);
     
     filteredRobots = robotsData.filter(robot => {
-        // Search text matching (name, year, competition, team members, hardware tags)
+        // Search text matching (name, year, competition, team members, tags)
         const nameMatch = removeAccents(robot.name.toLowerCase()).includes(searchVal);
         const yearMatchText = robot.year ? removeAccents(robot.year.toLowerCase()).includes(searchVal) : false;
         const compMatchText = removeAccents(robot.competition.toLowerCase()).includes(searchVal);
         const teamMatch = removeAccents(robot.team.toLowerCase()).includes(searchVal);
-        const tagsMatchText = robot.hardware && Array.isArray(robot.hardware)
+        
+        const hwMatchText = robot.hardware && Array.isArray(robot.hardware)
             ? robot.hardware.some(tag => removeAccents(tag.toLowerCase()).includes(searchVal))
             : false;
+        const boardMatchText = robot.board && Array.isArray(robot.board)
+            ? robot.board.some(tag => removeAccents(tag.toLowerCase()).includes(searchVal))
+            : false;
+        const langMatchText = robot.language && Array.isArray(robot.language)
+            ? robot.language.some(tag => removeAccents(tag.toLowerCase()).includes(searchVal))
+            : false;
             
-        const textMatch = nameMatch || yearMatchText || compMatchText || teamMatch || tagsMatchText;
+        const textMatch = nameMatch || yearMatchText || compMatchText || teamMatch || hwMatchText || boardMatchText || langMatchText;
         
         // Dropdown matching
         const yearMatch = !selectedYear || robot.year === selectedYear;
         const compMatch = !selectedComp || robot.competition === selectedComp;
         
-        // Hardware tag matching (AND-logic: robot must have all selected tags)
-        const tagsMatch = checkedTags.every(tag => robot.hardware && robot.hardware.includes(tag));
+        // Tag matching (AND-logic: robot must have all selected tags in each category)
+        const hwMatch = checkedHw.every(tag => robot.hardware && robot.hardware.includes(tag));
+        const boardMatch = checkedBoards.every(tag => robot.board && robot.board.includes(tag));
+        const langMatch = checkedLangs.every(tag => robot.language && robot.language.includes(tag));
         
-        return textMatch && yearMatch && compMatch && tagsMatch;
+        return textMatch && yearMatch && compMatch && hwMatch && boardMatch && langMatch;
     });
     
     renderCards();
@@ -287,13 +349,44 @@ function renderCards() {
         // URL encode robot name for safe fallback URL
         const fallbackText = encodeURIComponent(robot.name);
         
-        // Construct hardware tags badges HTML
-        let hwBadgesHtml = '';
+        // Construct tags badges HTML
+        let tagsHtml = '';
+        
+        // Render Board badges
+        if (robot.board && robot.board.length > 0) {
+            tagsHtml += `
+                <div class="flex flex-wrap gap-1.5 mb-3">
+                    <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider w-full mb-0.5 block">Deska / Platforma:</span>
+                    ${robot.board.map(tag => `
+                        <span class="px-2 py-0.5 text-[10px] font-bold rounded-md border ${getTagColorClass(tag, 'board')}">
+                            ${tag}
+                        </span>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        // Render Language badges
+        if (robot.language && robot.language.length > 0) {
+            tagsHtml += `
+                <div class="flex flex-wrap gap-1.5 mb-3">
+                    <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider w-full mb-0.5 block">Jazyk:</span>
+                    ${robot.language.map(tag => `
+                        <span class="px-2 py-0.5 text-[10px] font-bold rounded-md border ${getTagColorClass(tag, 'language')}">
+                            ${tag}
+                        </span>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        // Render Hardware badges
         if (robot.hardware && robot.hardware.length > 0) {
-            hwBadgesHtml = `
+            tagsHtml += `
                 <div class="flex flex-wrap gap-1.5">
+                    <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider w-full mb-0.5 block">Hardware:</span>
                     ${robot.hardware.map(tag => `
-                        <span class="px-2 py-0.5 text-[10px] font-bold rounded-md border ${getTagColorClass(tag)}">
+                        <span class="px-2 py-0.5 text-[10px] font-bold rounded-md border ${getTagColorClass(tag, 'hardware')}">
                             ${tag}
                         </span>
                     `).join('')}
@@ -372,9 +465,9 @@ function renderCards() {
                     </p>
                 </div>
                 
-                <!-- Hardware Tags (at the bottom, before buttons) -->
-                <div class="mt-auto mb-6">
-                    ${hwBadgesHtml}
+                <!-- Tags (at the bottom, before buttons) -->
+                <div class="mt-auto mb-6 space-y-3">
+                    ${tagsHtml}
                 </div>
                 
                 <!-- Action Buttons -->

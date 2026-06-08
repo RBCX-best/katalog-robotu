@@ -10,6 +10,13 @@
       "Barevný senzor",
       "Smart servo"
     ],
+    "language": [
+      "C++"
+    ],
+    "board": [
+      "RBCX",
+      "ESP32"
+    ],
     "image": "images/falkon1_3.jpg",
     "issue_url": "https://github.com/RBCX-best/katalog-robotu/issues/3"
   },
@@ -23,6 +30,13 @@
     "hardware": [
       "Barevný senzor",
       "Gyroskop"
+    ],
+    "language": [
+      "C++"
+    ],
+    "board": [
+      "RBCX",
+      "ESP32"
     ],
     "image": "images/kans_2.jpg",
     "issue_url": "https://github.com/RBCX-best/katalog-robotu/issues/2"
