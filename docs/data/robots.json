@@ -22,6 +22,33 @@
     "issue_url": "https://github.com/RBCX-best/katalog-robotu/issues/3"
   },
   {
+    "id": 5,
+    "name": "Cheesecake",
+    "year": "2026",
+    "competition": "Robotický den",
+    "team": "Nikola Zeman, Jakub Šlof",
+    "github": "https://github.com/ZemanNz/CHEESECAKE",
+    "board": [
+      "ESP32",
+      "RBCX"
+    ],
+    "language": [
+      "C++",
+      "Python",
+      "Yolo"
+    ],
+    "hardware": [
+      "Kamera",
+      "Ultrazvukový senzor",
+      "Smart servo",
+      "Display",
+      "IR",
+      "Gyroskop"
+    ],
+    "image": "images/cheesecake_5.png",
+    "issue_url": "https://github.com/RBCX-best/katalog-robotu/issues/5"
+  },
+  {
     "id": 2,
     "name": "kans",
     "year": "2025",
