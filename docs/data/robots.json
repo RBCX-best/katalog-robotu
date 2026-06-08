@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "name": "Foton",
+    "year": "2025/2026",
+    "competition": "RBCX-BEST",
+    "team": "Jan Novák, Petr Svoboda",
+    "github": "https://github.com/RBCX-best/katalog-robotu",
+    "image": "images/foton_robot.png",
+    "issue_url": "https://github.com/RBCX-best/katalog-robotu/issues/1"
+  },
+  {
+    "id": 2,
+    "name": "Antenka",
+    "year": "2024/2025",
+    "competition": "Robotiáda 2025",
+    "team": "Eva Černá, Martin Kovář",
+    "github": "https://github.com/RBCX-best/katalog-robotu",
+    "image": "images/antenka_robot.png",
+    "issue_url": "https://github.com/RBCX-best/katalog-robotu/issues/2"
+  }
+]

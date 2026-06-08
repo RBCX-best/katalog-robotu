@@ -1,0 +1,66 @@
+name: "Nový robot do katalogu"
+description: "Přidejte nového robota, kterého jste v rámci kroužku postavili."
+title: "[Robot] Název Robota"
+labels: ["schvaleno"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Děkujeme, že přidáváte svého robota do našeho katalogu! Vyplňte prosím níže uvedený formulář.
+        Po schválení labelu `schvaleno` administrátorem kroužku se robot automaticky propíše na web kroužku.
+
+  - type: input
+    id: name
+    attributes:
+      label: "Název robota"
+      placeholder: "např. Antenka"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: year
+    attributes:
+      label: "Rok"
+      description: "Vyberte školní rok, ve kterém byl robot postaven."
+      options:
+        - "2025/2026"
+        - "2024/2025"
+        - "2023/2024"
+        - "2022/2023"
+        - "2021/2022"
+        - "Starší"
+    validations:
+      required: true
+
+  - type: input
+    id: competition
+    attributes:
+      label: "Soutěž"
+      placeholder: "např. Robotiáda 2026, Istrobot 2025, RBCX-BEST"
+    validations:
+      required: true
+
+  - type: input
+    id: team
+    attributes:
+      label: "Členové týmu"
+      placeholder: "např. Jan Novák, Petr Svoboda, Eva Černá"
+    validations:
+      required: true
+
+  - type: input
+    id: github
+    attributes:
+      label: "Odkaz na GitHub repozitář robota"
+      placeholder: "např. https://github.com/RBCX-best/katalog-robotu"
+    validations:
+      required: true
+
+  - type: textarea
+    id: photo
+    attributes:
+      label: "Fotografie robota"
+      description: "Sem nahrajte fotku robota. Přetáhněte sem obrázek (Drag & Drop) nebo klikněte a vyberte soubor."
+      placeholder: "Sem přetáhněte obrázek..."
+    validations:
+      required: true

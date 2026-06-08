@@ -1,0 +1,49 @@
+name: Process Approved Robot Issue
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  process_robot:
+    if: github.event.label.name == 'schvaleno'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Run process script
+        id: process
+        run: python scripts/process_robot.py
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs: add robot ${{ steps.process.outputs.robot_name }} (closes #${{ github.event.issue.number }})"
+          file_pattern: 'docs/data/robots.json docs/images/*'
+          commit_user_name: "GitHub Action"
+          commit_user_email: "actions@github.com"
+          commit_author: "GitHub Action <actions@github.com>"
+
+      - name: Comment and close issue
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --body "### Robot **${{ steps.process.outputs.robot_name }}** byl úspěšně schválen a přidán do katalogu! 🎉
+
+          Můžete se na něj podívat na našem webu. Odkaz na tuto issue byl uložen k záznamu robotů."
+          gh issue close "$ISSUE_NUMBER"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
