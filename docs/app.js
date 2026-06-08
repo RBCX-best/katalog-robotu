@@ -240,11 +240,16 @@ function applyFilters() {
     const checkedTags = Array.from(document.querySelectorAll('input[name="hardware-filter"]:checked')).map(cb => cb.value);
     
     filteredRobots = robotsData.filter(robot => {
-        // Search text matching (name, competition, team members)
+        // Search text matching (name, year, competition, team members, hardware tags)
         const nameMatch = removeAccents(robot.name.toLowerCase()).includes(searchVal);
+        const yearMatchText = robot.year ? removeAccents(robot.year.toLowerCase()).includes(searchVal) : false;
         const compMatchText = removeAccents(robot.competition.toLowerCase()).includes(searchVal);
         const teamMatch = removeAccents(robot.team.toLowerCase()).includes(searchVal);
-        const textMatch = nameMatch || compMatchText || teamMatch;
+        const tagsMatchText = robot.hardware && Array.isArray(robot.hardware)
+            ? robot.hardware.some(tag => removeAccents(tag.toLowerCase()).includes(searchVal))
+            : false;
+            
+        const textMatch = nameMatch || yearMatchText || compMatchText || teamMatch || tagsMatchText;
         
         // Dropdown matching
         const yearMatch = !selectedYear || robot.year === selectedYear;
