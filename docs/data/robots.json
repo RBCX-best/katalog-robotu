@@ -8,7 +8,8 @@
     "github": "https://github.com/ZemanNz/RBCX-VYSKOV-25",
     "hardware": [
       "Barevný senzor",
-      "Smart servo"
+      "Smart servo",
+      "Gyroskop"
     ],
     "language": [
       "C++"
