@@ -1,5 +1,7 @@
 # 🤖 Katalog Robotů – Automatizovaná Správa
 
+🔗 **[Zobrazit spuštěný katalog robotů](https://rbcx-best.github.io/katalog-robotu/)**
+
 Tento projekt slouží jako přehledný webový katalog pro prezentaci robotů z našeho robotického kroužku. Celé řešení běží staticky na **GitHub Pages** a o veškerý backend se starají **GitHub Actions** ve spolupráci s **Python skriptem**.
 
 ---
