@@ -14,22 +14,6 @@
     "issue_url": "https://github.com/RBCX-best/katalog-robotu/issues/3"
   },
   {
-    "id": 1,
-    "name": "Brno_kkk",
-    "year": "2025/2026",
-    "competition": "RBCX-BEST",
-    "team": "Jan Novák, Petr Svoboda",
-    "github": "https://github.com/RBCX-best/katalog-robotu",
-    "hardware": [
-      "Kamera",
-      "Barevný senzor",
-      "Gyroskop",
-      "LED diody"
-    ],
-    "image": "images/foton_robot.png",
-    "issue_url": "https://github.com/RBCX-best/katalog-robotu/issues/1"
-  },
-  {
     "id": 2,
     "name": "kans",
     "year": "2025/2026",
