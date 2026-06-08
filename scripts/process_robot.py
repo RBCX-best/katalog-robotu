@@ -13,19 +13,93 @@ def slugify(text):
     return slug.lower()
 
 def extract_image_url(text):
-    # Match markdown format: ![alt_text](url)
+    # 1. Match markdown format: ![alt_text](url)
     match = re.search(r'!\[.*?\]\((https?://[^\s)]+)\)', text)
     if match:
         return match.group(1)
-    # Match HTML format: <img src="url" ...>
+    
+    # 2. Match HTML format: <img src="url" ...>
     match = re.search(r'<img\s+[^>]*src=["\'](https?://[^"\']+)["\']', text)
     if match:
         return match.group(1)
-    # Match raw url format
-    match = re.search(r'(https?://[^\s]+)', text)
-    if match:
-        return match.group(1)
+    
+    # 3. Match raw GitHub asset/attachment URLs or URLs with image extensions.
+    # Ignore the repository URL under "- **GitHub**:"
+    lines = text.split('\n')
+    for line in lines:
+        if line.strip().startswith("- **GitHub"):
+            continue
+        urls = re.findall(r'(https?://[^\s)]+)', line)
+        for url in urls:
+            is_github_upload = "/assets/" in url or "/user-attachments/" in url or "/uploads/" in url
+            has_img_ext = any(url.lower().endswith(ext) for ext in ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp'])
+            if is_github_upload or has_img_ext:
+                return url
     return None
+
+def close_and_label_issue(issue_number):
+    token = os.environ.get('GITHUB_TOKEN') or os.environ.get('GH_TOKEN')
+    repo = os.environ.get('GITHUB_REPOSITORY')
+    
+    # Try using gh CLI first (pre-installed and pre-authenticated on GitHub runner if token is set)
+    try:
+        import subprocess
+        # Check if gh CLI is available
+        subprocess.run(["gh", "--version"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+        print("Closing issue using GitHub CLI...")
+        # Add label 'zpracovano' and remove 'schvaleno'
+        subprocess.run(["gh", "issue", "edit", str(issue_number), "--add-label", "zpracovano", "--remove-label", "schvaleno"], check=True)
+        # Close issue
+        subprocess.run(["gh", "issue", "close", str(issue_number)], check=True)
+        print(f"Successfully closed and labeled issue #{issue_number} via GitHub CLI.")
+        return True
+    except Exception as cli_error:
+        print(f"GitHub CLI method failed or not available: {cli_error}")
+        
+    # Fall back to direct REST API call if gh CLI is not available
+    if not token or not repo:
+        print("Warning: GITHUB_TOKEN/GH_TOKEN or GITHUB_REPOSITORY not set. Cannot use REST API to close issue.")
+        return False
+        
+    print("Closing issue using GitHub REST API...")
+    url = f"https://api.github.com/repos/{repo}/issues/{issue_number}"
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Accept": "application/vnd.github+json",
+        "Content-Type": "application/json",
+        "User-Agent": "Python-urllib"
+    }
+    
+    try:
+        # Fetch current labels to preserve others and modify 'schvaleno' / 'zpracovano'
+        req = urllib.request.Request(url, headers=headers)
+        with urllib.request.urlopen(req) as response:
+            issue_data = json.loads(response.read().decode('utf-8'))
+            current_labels = [l['name'] for l in issue_data.get('labels', [])]
+            
+        new_labels = [l for l in current_labels if l != 'schvaleno']
+        if 'zpracovano' not in new_labels:
+            new_labels.append('zpracovano')
+            
+        data = {
+            "state": "closed",
+            "labels": new_labels
+        }
+        
+        req = urllib.request.Request(
+            url,
+            data=json.dumps(data).encode('utf-8'),
+            headers=headers,
+            method='PATCH'
+        )
+        with urllib.request.urlopen(req) as response:
+            if response.status == 200:
+                print(f"Successfully closed and labeled issue #{issue_number} via REST API.")
+                return True
+    except Exception as api_error:
+        print(f"GitHub REST API method failed: {api_error}")
+        
+    return False
 
 def main():
     body = os.environ.get('ISSUE_BODY', '')
@@ -165,6 +239,10 @@ def main():
     if github_output:
         with open(github_output, 'a', encoding='utf-8') as f:
             f.write(f"robot_name={parsed['name']}\n")
+
+    # Close and label the issue
+    if issue_number and issue_number != '0':
+        close_and_label_issue(issue_number)
 
     return 0
 
