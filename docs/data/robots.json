@@ -53,6 +53,29 @@
     "status": "active"
   },
   {
+    "id": 6,
+    "name": "pes",
+    "year": "2026",
+    "competition": "Kybernoid",
+    "team": "holub",
+    "github": "https://github.com/ZemanNz/CHEESECAKE",
+    "board": [
+      "ESP32",
+      "RBC"
+    ],
+    "language": [
+      "C++"
+    ],
+    "hardware": [
+      "IR",
+      "Smart servo"
+    ],
+    "image": "images/pes_6.webp",
+    "issue_url": "https://github.com/RBCX-best/katalog-robotu/issues/6",
+    "placement": "3. místo",
+    "status": "development"
+  },
+  {
     "id": 2,
     "name": "kans",
     "year": "2025",
