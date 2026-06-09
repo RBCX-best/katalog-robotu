@@ -182,6 +182,81 @@ def main():
 
         return 0
 
+    # Check if this is a status change request
+    is_status_change = "### Změna stavu robota" in body or "Zmena stavu robota" in body
+
+    if is_status_change:
+        # Parse robot ID
+        match_id = re.search(r'[-*]\s*\*\*ID\*\*\s*:\s*(\d+)', body)
+        # Parse new status text (Czech label written in the issue)
+        match_status = re.search(r'[-*]\s*\*\*Nový stav\*\*\s*:\s*(.+)', body)
+
+        if not match_id or not match_status:
+            print("Error: Could not parse ID or new status for status change request.")
+            return 1
+
+        change_id = int(match_id.group(1))
+        raw_new_status = match_status.group(1).strip().lower()
+
+        # Normalise to internal values
+        if "vývoj" in raw_new_status or "development" in raw_new_status or "vyvoj" in raw_new_status:
+            new_status = "development"
+        elif "rozložen" in raw_new_status or "neaktivní" in raw_new_status or "retired" in raw_new_status or "rozlozen" in raw_new_status:
+            new_status = "retired"
+        else:
+            new_status = "active"
+
+        # Load robots.json
+        robots_json_path = "docs/data/robots.json"
+        robots_list = []
+        if os.path.exists(robots_json_path):
+            try:
+                with open(robots_json_path, 'r', encoding='utf-8') as f:
+                    content = f.read().strip()
+                    if content:
+                        robots_list = json.loads(content)
+                        if not isinstance(robots_list, list):
+                            print(f"Error: robots.json is not a list. Got: {type(robots_list)}")
+                            return 1
+            except Exception as e:
+                print(f"Error: Could not read robots.json: {e}")
+                return 1
+
+        # Find robot and update status
+        changed_robot_name = f"Robot #{change_id}"
+        found = False
+        for robot in robots_list:
+            if robot.get("id") == change_id:
+                old_status = robot.get("status", "active")
+                robot["status"] = new_status
+                changed_robot_name = robot.get("name", changed_robot_name)
+                found = True
+                print(f"Updated status of '{changed_robot_name}' (ID {change_id}): {old_status} -> {new_status}")
+                break
+
+        if not found:
+            print(f"Error: Robot with ID {change_id} not found in catalog.")
+            return 1
+
+        # Save robots.json
+        with open(robots_json_path, 'w', encoding='utf-8') as f:
+            json.dump(robots_list, f, indent=2, ensure_ascii=False)
+        print(f"Successfully saved updated robots.json.")
+
+        # Write GitHub Actions outputs
+        github_output = os.environ.get('GITHUB_OUTPUT')
+        if github_output:
+            with open(github_output, 'a', encoding='utf-8') as f:
+                f.write(f"robot_name={changed_robot_name}\n")
+                f.write(f"action_type=status_change\n")
+                f.write(f"new_status={new_status}\n")
+
+        # Close and label issue
+        if issue_number and issue_number != '0':
+            close_and_label_issue(issue_number)
+
+        return 0
+
     # Process ADD/UPDATE robot request
     # Parse key-value Markdown fields: - **Key**: Value
     data = {}

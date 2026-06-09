@@ -50,6 +50,10 @@ jobs:
           gh issue edit "$ISSUE_NUMBER" --add-label "zpracovano" --remove-label "schvaleno"
           if [ "${{ steps.process.outputs.action_type }}" = "delete" ]; then
             gh issue comment "$ISSUE_NUMBER" --body "### Robot **${{ steps.process.outputs.robot_name }}** byl úspěšně odstraněn z katalogu. 🗑️"
+          elif [ "${{ steps.process.outputs.action_type }}" = "status_change" ]; then
+            gh issue comment "$ISSUE_NUMBER" --body "### Stav robota **${{ steps.process.outputs.robot_name }}** byl úspěšně změněn na **${{ steps.process.outputs.new_status }}**. ✅
+
+            Změna se projeví na webu po nejbližším nasazení."
           else
             gh issue comment "$ISSUE_NUMBER" --body "### Robot **${{ steps.process.outputs.robot_name }}** byl úspěšně schválen a přidán do katalogu! 🎉
 
