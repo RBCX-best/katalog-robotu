@@ -69,6 +69,13 @@ function initApp() {
     renderFilterCheckboxes(allBoardTags, boardFiltersContainer, 'board-filter');
     renderFilterCheckboxes(allLanguageTags, languageFiltersContainer, 'language-filter');
     
+    // Parse URL query parameter to pre-populate search (e.g. from Hall of Fame link)
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchQuery = urlParams.get('search');
+    if (searchQuery) {
+        searchInput.value = searchQuery;
+    }
+    
     // Perform initial render
     applyFilters();
     
@@ -438,22 +445,22 @@ function renderCards() {
             let iconName = 'award';
             
             if (robot.placement.includes('1.')) {
-                badgeBgClass = 'bg-amber-500/10 text-amber-350 border-amber-500/30 backdrop-blur-md';
+                badgeBgClass = 'bg-amber-500/10 text-amber-300 border-amber-500/30';
                 iconColor = 'text-amber-400';
                 iconName = 'trophy';
             } else if (robot.placement.includes('2.')) {
-                badgeBgClass = 'bg-slate-300/10 text-slate-200 border-slate-350/30 backdrop-blur-md';
+                badgeBgClass = 'bg-slate-300/10 text-slate-200 border-slate-350/30';
                 iconColor = 'text-slate-300';
                 iconName = 'medal';
             } else if (robot.placement.includes('3.')) {
-                badgeBgClass = 'bg-amber-700/15 text-amber-600 border-amber-700/30 backdrop-blur-md';
+                badgeBgClass = 'bg-amber-700/15 text-amber-600 border-amber-700/30';
                 iconColor = 'text-amber-600';
                 iconName = 'medal';
             }
             
             placementBadgeHtml = `
-                <div class="absolute top-3 left-3 z-10 flex items-center gap-1.5 px-2.5 py-1 ${badgeBgClass} border rounded-lg text-[10px] font-bold tracking-wide uppercase shadow-lg">
-                    <i data-lucide="${iconName}" class="w-3.5 h-3.5 ${iconColor}"></i>
+                <div class="flex items-center gap-1 px-2 py-0.5 ${badgeBgClass} border rounded-lg text-[10px] font-bold tracking-wide uppercase flex-shrink-0">
+                    <i data-lucide="${iconName}" class="w-3 h-3 ${iconColor}"></i>
                     <span>${robot.placement}</span>
                 </div>
             `;
@@ -462,7 +469,6 @@ function renderCards() {
         card.innerHTML = `
             <!-- Image Container -->
             <div class="relative aspect-[4/3] overflow-hidden bg-slate-950/60">
-                ${placementBadgeHtml}
                 <img src="${robot.image}" alt="${robot.name}" loading="lazy" 
                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                      onerror="this.onerror=null; this.src='https://placehold.co/600x400/0d1127/a78bfa?text=${fallbackText}';">
@@ -483,10 +489,13 @@ function renderCards() {
                     </span>
                 </div>
                 
-                <!-- Robot Name -->
-                <h3 class="font-outfit text-xl font-bold text-white mb-2 group-hover:text-brand-300 transition-colors">
-                    ${robot.name}
-                </h3>
+                <!-- Robot Name & Placement -->
+                <div class="flex items-start justify-between gap-3 mb-2">
+                    <h3 class="font-outfit text-xl font-bold text-white group-hover:text-brand-300 transition-colors">
+                        ${robot.name}
+                    </h3>
+                    ${placementBadgeHtml}
+                </div>
                 
                 <!-- Team members -->
                 <div class="mb-4">
