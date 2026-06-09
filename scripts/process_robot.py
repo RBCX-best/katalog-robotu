@@ -202,7 +202,8 @@ def main():
         "GitHub": "github",
         "Vývojová deska": "board",
         "Jazyk": "language",
-        "Hardware": "hardware"
+        "Hardware": "hardware",
+        "Umístění": "placement"
     }
 
     parsed = {}
@@ -354,7 +355,8 @@ def main():
         "language": language_tags,
         "hardware": hardware_tags,
         "image": f"images/{image_filename}",
-        "issue_url": issue_url
+        "issue_url": issue_url,
+        "placement": parsed.get("placement", "")
     }
 
     # Remove existing record with the same ID if it exists (for updates)

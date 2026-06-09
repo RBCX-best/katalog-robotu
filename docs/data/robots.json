@@ -19,7 +19,8 @@
       "ESP32"
     ],
     "image": "images/falkon1_3.jpg",
-    "issue_url": "https://github.com/RBCX-best/katalog-robotu/issues/3"
+    "issue_url": "https://github.com/RBCX-best/katalog-robotu/issues/3",
+    "placement": "1. místo"
   },
   {
     "id": 5,
@@ -46,7 +47,8 @@
       "Gyroskop"
     ],
     "image": "images/cheesecake_5.png",
-    "issue_url": "https://github.com/RBCX-best/katalog-robotu/issues/5"
+    "issue_url": "https://github.com/RBCX-best/katalog-robotu/issues/5",
+    "placement": "2. místo"
   },
   {
     "id": 2,
@@ -67,6 +69,7 @@
       "ESP32"
     ],
     "image": "images/kans_2.jpg",
-    "issue_url": "https://github.com/RBCX-best/katalog-robotu/issues/2"
+    "issue_url": "https://github.com/RBCX-best/katalog-robotu/issues/2",
+    "placement": "3. místo"
   }
 ]
