@@ -203,12 +203,22 @@ def main():
         "Vývojová deska": "board",
         "Jazyk": "language",
         "Hardware": "hardware",
-        "Umístění": "placement"
+        "Umístění": "placement",
+        "Stav": "status"
     }
 
     parsed = {}
     for czech_key, field_name in field_mapping.items():
         parsed[field_name] = data.get(czech_key, '').strip()
+
+    # Parse and normalise status field
+    raw_status = data.get("Stav", "").strip().lower()
+    status = "active"
+    if "vývoj" in raw_status or "development" in raw_status or "progress" in raw_status:
+        status = "development"
+    elif "důchod" in raw_status or "retired" in raw_status or "inactive" in raw_status or "rozložen" in raw_status or "done" in raw_status:
+        status = "retired"
+    parsed["status"] = status
 
     # Validate mandatory fields
     required_fields = ["name", "year", "competition", "team", "github"]
@@ -356,7 +366,8 @@ def main():
         "hardware": hardware_tags,
         "image": f"images/{image_filename}",
         "issue_url": issue_url,
-        "placement": parsed.get("placement", "")
+        "placement": parsed.get("placement", ""),
+        "status": parsed.get("status", "active")
     }
 
     # Remove existing record with the same ID if it exists (for updates)

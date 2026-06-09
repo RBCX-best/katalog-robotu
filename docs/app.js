@@ -13,6 +13,7 @@ const emptyState = document.getElementById('empty-state');
 const searchInput = document.getElementById('search-input');
 const filterYear = document.getElementById('filter-year');
 const filterCompetition = document.getElementById('filter-competition');
+const filterStatus = document.getElementById('filter-status');
 const boardFiltersContainer = document.getElementById('board-filters');
 const languageFiltersContainer = document.getElementById('language-filters');
 const hardwareFiltersContainer = document.getElementById('hardware-filters');
@@ -83,6 +84,9 @@ function initApp() {
     searchInput.addEventListener('input', applyFilters);
     filterYear.addEventListener('change', applyFilters);
     filterCompetition.addEventListener('change', applyFilters);
+    if (filterStatus) {
+        filterStatus.addEventListener('change', applyFilters);
+    }
     
     btnClear.addEventListener('click', resetFilters);
     btnEmptyReset.addEventListener('click', resetFilters);
@@ -222,6 +226,9 @@ function resetFilters() {
     searchInput.value = '';
     filterYear.value = '';
     filterCompetition.value = '';
+    if (filterStatus) {
+        filterStatus.value = '';
+    }
     
     // Uncheck all filters
     document.querySelectorAll('input[name="hardware-filter"]').forEach(cb => cb.checked = false);
@@ -293,6 +300,7 @@ function applyFilters() {
     const searchVal = removeAccents(searchInput.value.trim().toLowerCase());
     const selectedYear = filterYear.value;
     const selectedComp = filterCompetition.value;
+    const selectedStatus = filterStatus ? filterStatus.value : '';
     
     // Get list of checked tags
     const checkedHw = Array.from(document.querySelectorAll('input[name="hardware-filter"]:checked')).map(cb => cb.value);
@@ -321,13 +329,14 @@ function applyFilters() {
         // Dropdown matching
         const yearMatch = !selectedYear || robot.year === selectedYear;
         const compMatch = !selectedComp || robot.competition === selectedComp;
+        const statusMatch = !selectedStatus || (robot.status || 'active') === selectedStatus;
         
         // Tag matching (AND-logic: robot must have all selected tags in each category)
         const hwMatch = checkedHw.every(tag => robot.hardware && robot.hardware.includes(tag));
         const boardMatch = checkedBoards.every(tag => robot.board && robot.board.includes(tag));
         const langMatch = checkedLangs.every(tag => robot.language && robot.language.includes(tag));
         
-        return textMatch && yearMatch && compMatch && hwMatch && boardMatch && langMatch;
+        return textMatch && yearMatch && compMatch && statusMatch && hwMatch && boardMatch && langMatch;
     });
     
     renderCards();
@@ -398,27 +407,44 @@ function renderCards() {
                         </span>
                     `).join('')}
                 </div>
-            `;
-        }
-        
-        // Action Buttons
+                 // Action Buttons
         let actionButtonsHtml = '';
         if (adminMode) {
             actionButtonsHtml = `
-                <div class="grid grid-cols-5 gap-2">
-                    <a href="${robot.github}" target="_blank" 
-                       class="col-span-3 flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-80/80 hover:bg-brand-600 hover:text-white text-slate-200 text-xs font-semibold rounded-xl border border-slate-700/50 hover:border-brand-500/40 transition-all">
-                        <i data-lucide="github" class="w-4 h-4"></i>
-                        Repozitář
-                    </a>
-                    <button onclick="requestDeleteRobot(${robot.id}, '${robot.name.replace(/'/g, "\\'")}')" title="Odstranit robota z katalogu"
-                       class="col-span-1 flex items-center justify-center p-2.5 bg-red-950/40 hover:bg-red-900/30 text-red-400 hover:text-red-300 rounded-xl border border-red-900/30 hover:border-red-900/50 transition-all">
-                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                    </button>
-                    <a href="${robot.issue_url}" target="_blank" title="Zobrazit schvalovací issue"
-                       class="col-span-1 flex items-center justify-center p-2.5 bg-slate-850/60 hover:bg-slate-800 text-slate-400 hover:text-slate-200 rounded-xl border border-slate-800/80 hover:border-slate-700/80 transition-all">
-                        <i data-lucide="external-link" class="w-4 h-4"></i>
-                    </a>
+                <div class="space-y-2">
+                    <!-- Status Switcher for Admin -->
+                    <div class="flex items-center justify-between gap-1.5 px-3 py-2 bg-slate-900/60 border border-slate-800 rounded-xl">
+                        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Změnit stav:</span>
+                        <div class="flex gap-2">
+                            <button onclick="requestStatusChange(${robot.id}, '${robot.name.replace(/'/g, "\\'")}', 'active')" title="Požádat o změnu stavu na: Aktivní"
+                                    class="w-5 h-5 rounded-full bg-emerald-500/10 hover:bg-emerald-500/25 border border-emerald-500/30 flex items-center justify-center transition-all">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span>
+                            </button>
+                            <button onclick="requestStatusChange(${robot.id}, '${robot.name.replace(/'/g, "\\'")}', 'development')" title="Požádat o změnu stavu na: Ve vývoji"
+                                    class="w-5 h-5 rounded-full bg-amber-500/10 hover:bg-amber-500/25 border border-amber-500/30 flex items-center justify-center transition-all">
+                                <span class="w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)]"></span>
+                            </button>
+                            <button onclick="requestStatusChange(${robot.id}, '${robot.name.replace(/'/g, "\\'")}', 'retired')" title="Požádat o změnu stavu na: Rozložen"
+                                    class="w-5 h-5 rounded-full bg-rose-500/10 hover:bg-rose-500/25 border border-rose-500/30 flex items-center justify-center transition-all">
+                                <span class="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]"></span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-5 gap-2">
+                        <a href="${robot.github}" target="_blank" 
+                           class="col-span-3 flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-80/80 hover:bg-brand-600 hover:text-white text-slate-200 text-xs font-semibold rounded-xl border border-slate-700/50 hover:border-brand-500/40 transition-all font-outfit">
+                            <i data-lucide="github" class="w-4 h-4"></i>
+                            Repozitář
+                        </a>
+                        <button onclick="requestDeleteRobot(${robot.id}, '${robot.name.replace(/'/g, "\\'")}')" title="Odstranit robota z katalogu"
+                           class="col-span-1 flex items-center justify-center p-2.5 bg-red-950/40 hover:bg-red-900/30 text-red-400 hover:text-red-300 rounded-xl border border-red-900/30 hover:border-red-900/50 transition-all">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                        <a href="${robot.issue_url}" target="_blank" title="Zobrazit schvalovací issue"
+                           class="col-span-1 flex items-center justify-center p-2.5 bg-slate-850/60 hover:bg-slate-800 text-slate-400 hover:text-slate-200 rounded-xl border border-slate-800/80 hover:border-slate-700/80 transition-all">
+                            <i data-lucide="external-link" class="w-4 h-4"></i>
+                        </a>
+                    </div>
                 </div>
             `;
         } else {
@@ -466,9 +492,29 @@ function renderCards() {
             `;
         }
 
+        // Project Status Badge / Dot
+        const statusVal = robot.status || 'active';
+        let statusText = 'Aktivní';
+        let statusDotColor = 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]';
+        if (statusVal === 'development') {
+            statusText = 'Ve vývoji';
+            statusDotColor = 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)]';
+        } else if (statusVal === 'retired') {
+            statusText = 'Rozložen';
+            statusDotColor = 'bg-rose-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]';
+        }
+
+        const statusBadgeHtml = `
+            <div class="absolute top-3 right-3 z-10 flex items-center gap-1.5 px-2.5 py-1 bg-slate-900/90 text-slate-300 border border-slate-700/50 rounded-lg text-[10px] font-bold tracking-wide uppercase shadow-lg">
+                <span class="w-2 h-2 rounded-full ${statusDotColor}"></span>
+                <span>${statusText}</span>
+            </div>
+        `;
+
         card.innerHTML = `
             <!-- Image Container -->
             <div class="relative aspect-[4/3] overflow-hidden bg-slate-950/60">
+                ${statusBadgeHtml}
                 <img src="${robot.image}" alt="${robot.name}" loading="lazy" 
                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                      onerror="this.onerror=null; this.src='https://placehold.co/600x400/0d1127/a78bfa?text=${fallbackText}';">
@@ -527,6 +573,21 @@ window.requestDeleteRobot = function(id, name) {
     if (confirmDelete) {
         const title = `Smazat robota: ${name} (ID: ${id})`;
         const body = `### Odstranění robota\n- **ID**: ${id}\n- **Název**: ${name}\n\nProsím o schválení odstranění tohoto robota z katalogu.`;
+        const repoUrl = "https://github.com/RBCX-best/katalog-robotu/issues/new";
+        window.location.href = `${repoUrl}?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`;
+    }
+};
+
+// Global function for status change requests
+window.requestStatusChange = function(id, name, targetStatus) {
+    let targetStatusText = "Aktivní";
+    if (targetStatus === 'development') targetStatusText = "Ve vývoji";
+    else if (targetStatus === 'retired') targetStatusText = "Rozložen / Neaktivní";
+
+    const confirmChange = confirm(`Opravdu chcete požádat o změnu stavu robota "${name}" (ID: ${id}) na "${targetStatusText}"?\n\nBudete přesměrováni na předvyplněný GitHub Issue.`);
+    if (confirmChange) {
+        const title = `Změna stavu robota: ${name} (ID: ${id}) na ${targetStatusText}`;
+        const body = `### Změna stavu robota\n- **ID**: ${id}\n- **Název**: ${name}\n- **Nový stav**: ${targetStatusText}\n\nProsím o změnu stavu tohoto robota v katalogu.`;
         const repoUrl = "https://github.com/RBCX-best/katalog-robotu/issues/new";
         window.location.href = `${repoUrl}?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`;
     }

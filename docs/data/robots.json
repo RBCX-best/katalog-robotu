@@ -20,7 +20,8 @@
     ],
     "image": "images/falkon1_3.jpg",
     "issue_url": "https://github.com/RBCX-best/katalog-robotu/issues/3",
-    "placement": "1. místo"
+    "placement": "1. místo",
+    "status": "active"
   },
   {
     "id": 5,
@@ -48,7 +49,8 @@
     ],
     "image": "images/cheesecake_5.png",
     "issue_url": "https://github.com/RBCX-best/katalog-robotu/issues/5",
-    "placement": "2. místo"
+    "placement": "2. místo",
+    "status": "active"
   },
   {
     "id": 2,
@@ -70,6 +72,7 @@
     ],
     "image": "images/kans_2.jpg",
     "issue_url": "https://github.com/RBCX-best/katalog-robotu/issues/2",
-    "placement": "3. místo"
+    "placement": "3. místo",
+    "status": "active"
   }
 ]
