@@ -407,7 +407,10 @@ function renderCards() {
                         </span>
                     `).join('')}
                 </div>
-                 // Action Buttons
+            `;
+        }
+        
+        // Action Buttons
         let actionButtonsHtml = '';
         if (adminMode) {
             actionButtonsHtml = `
