@@ -410,6 +410,21 @@ function renderCards() {
             `;
         }
         
+        // Custom Links
+        let linksHtml = '';
+        if (robot.links && robot.links.length > 0) {
+            linksHtml += `
+                <div class="flex flex-wrap gap-2 mb-4 pt-3 border-t border-slate-800/40">
+                    ${robot.links.map(link => `
+                        <a href="${link.url}" target="_blank" class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-900/60 hover:bg-slate-800 border border-slate-800/80 hover:border-slate-700 text-slate-300 hover:text-white text-xs font-semibold rounded-lg transition-all">
+                            <i data-lucide="link" class="w-3 h-3 text-brand-400"></i>
+                            <span>${link.label}</span>
+                        </a>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
         // Action Buttons
         let actionButtonsHtml = '';
         if (adminMode) {
@@ -435,7 +450,7 @@ function renderCards() {
                     </div>
                     <div class="grid grid-cols-5 gap-2">
                         <a href="${robot.github}" target="_blank" 
-                           class="col-span-3 flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-80/80 hover:bg-brand-600 hover:text-white text-slate-200 text-xs font-semibold rounded-xl border border-slate-700/50 hover:border-brand-500/40 transition-all font-outfit">
+                           class="col-span-3 flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-800/80 hover:bg-brand-600 hover:text-white text-slate-200 text-xs font-semibold rounded-xl border border-slate-700/50 hover:border-brand-500/40 transition-all font-outfit">
                             <i data-lucide="github" class="w-4 h-4"></i>
                             Repozitář
                         </a>
@@ -554,9 +569,11 @@ function renderCards() {
                 </div>
                 
                 <!-- Tags (at the bottom, before buttons) -->
-                <div class="mt-auto mb-6 space-y-3">
+                <div class="mt-auto mb-4 space-y-3">
                     ${tagsHtml}
                 </div>
+                
+                ${linksHtml}
                 
                 <!-- Action Buttons -->
                 ${actionButtonsHtml}

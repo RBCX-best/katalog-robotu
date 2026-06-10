@@ -279,7 +279,8 @@ def main():
         "Jazyk": "language",
         "Hardware": "hardware",
         "Umístění": "placement",
-        "Stav": "status"
+        "Stav": "status",
+        "Odkazy": "links"
     }
 
     parsed = {}
@@ -328,6 +329,19 @@ def main():
         hardware_tags = [tag.strip() for tag in raw_hardware.split(",") if tag.strip()]
     else:
         hardware_tags = []
+
+    # Parse links (comma-separated list of Label|URL)
+    raw_links = parsed.get("links", "")
+    links_list = []
+    if raw_links and raw_links not in ("Žádné odkazy", "None"):
+        link_items = [item.strip() for item in raw_links.split(",") if item.strip()]
+        for item in link_items:
+            if "|" in item:
+                lbl, url = item.split("|", 1)
+                links_list.append({
+                    "label": lbl.strip(),
+                    "url": url.strip()
+                })
 
     # Ensure output directories exist
     os.makedirs("docs/data", exist_ok=True)
@@ -442,7 +456,8 @@ def main():
         "image": f"images/{image_filename}",
         "issue_url": issue_url,
         "placement": parsed.get("placement", ""),
-        "status": parsed.get("status", "active")
+        "status": parsed.get("status", "active"),
+        "links": links_list
     }
 
     # Remove existing record with the same ID if it exists (for updates)
