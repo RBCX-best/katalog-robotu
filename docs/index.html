@@ -336,7 +336,7 @@
 
             <div class="space-y-4 max-w-4xl mx-auto">
 
-                <!-- Návod 1: Jak založit repozitář -->
+                <!-- Návod 1: Vlastní repozitář na GitHubu -->
                 <details class="group glass-panel border border-slate-800/40 rounded-2xl overflow-hidden">
                     <summary class="flex items-center justify-between gap-4 p-6 cursor-pointer select-none list-none hover:bg-slate-800/20 transition-colors">
                         <div class="flex items-center gap-4">
@@ -350,43 +350,73 @@
                         </div>
                         <i data-lucide="chevron-down" class="w-5 h-5 text-slate-500 flex-shrink-0 transition-transform duration-300 group-open:rotate-180"></i>
                     </summary>
-                    <div class="px-6 pb-6 border-t border-slate-800/40 pt-5 space-y-4 text-slate-300 text-sm leading-relaxed">
-                        <ol class="space-y-4">
-                            <li class="flex gap-3">
-                                <span class="w-6 h-6 rounded-full bg-brand-500/15 border border-brand-500/25 text-brand-300 text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
-                                <div><strong class="text-white">Přejdi na GitHub organizaci</strong> kroužku a klikni na zelené tlačítko <span class="px-1.5 py-0.5 bg-emerald-500/10 text-emerald-300 border border-emerald-500/25 rounded text-xs font-semibold">New repository</span>.</div>
-                            </li>
-                            <li class="flex gap-3">
-                                <span class="w-6 h-6 rounded-full bg-brand-500/15 border border-brand-500/25 text-brand-300 text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
-                                <div><strong class="text-white">Pojmenuj repozitář</strong> jasně: například <code class="px-1.5 py-0.5 bg-slate-900 border border-slate-700 rounded text-brand-300 text-xs">robot-nazev-rok</code>. Nastav viditelnost na <strong class="text-emerald-300">Public</strong>.</div>
-                            </li>
-                            <li class="flex gap-3">
-                                <span class="w-6 h-6 rounded-full bg-brand-500/15 border border-brand-500/25 text-brand-300 text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
-                                <div><strong class="text-white">Zaškrtni "Add a README file"</strong> — tím se repo ihned inicializuje a máš kam psát popis projektu.</div>
-                            </li>
-                            <li class="flex gap-3">
-                                <span class="w-6 h-6 rounded-full bg-brand-500/15 border border-brand-500/25 text-brand-300 text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">4</span>
-                                <div>
-                                    <strong class="text-white">Přidej .gitignore</strong> šablonu odpovídající tvému projektu:
-                                    <ul class="mt-2 space-y-1.5 ml-1">
-                                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-blue-400 flex-shrink-0"></span><strong class="text-blue-300">Arduino / C++:</strong> zvol šablonu <code class="px-1.5 py-0.5 bg-slate-900 border border-slate-700 rounded text-xs text-slate-300">C++</code> nebo <code class="px-1.5 py-0.5 bg-slate-900 border border-slate-700 rounded text-xs text-slate-300">Arduino</code></li>
-                                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-yellow-400 flex-shrink-0"></span><strong class="text-yellow-300">Python:</strong> zvol šablonu <code class="px-1.5 py-0.5 bg-slate-900 border border-slate-700 rounded text-xs text-slate-300">Python</code></li>
-                                    </ul>
+                    <div class="px-6 pb-6 border-t border-slate-800/40 pt-5 space-y-5 text-slate-300 text-sm leading-relaxed">
+                        <p class="text-slate-400">Pro každý projekt si založ svůj vlastní repozitář na svém osobním GitHub profilu. Ostatním k němu dáš přístup a prolinkuješ ho s naším katalogem robotů.</p>
+                        
+                        <div class="space-y-4">
+                            <!-- GitHub krok -->
+                            <div>
+                                <p class="text-xs font-bold text-slate-450 uppercase tracking-wider mb-2 flex items-center gap-2"><i data-lucide="github" class="w-3.5 h-3.5"></i> Krok A: Založení na webu GitHubu</p>
+                                <ol class="space-y-2 list-decimal pl-5 text-slate-300">
+                                    <li>Přihlas se na <strong class="text-white">github.com</strong> a v pravém horním rohu klikni na tlačítko <strong class="text-white">+</strong> → <strong class="text-white">New repository</strong>.</li>
+                                    <li>Zvol si název repozitáře (např. <code class="px-1.5 py-0.5 bg-slate-900 border border-slate-800 rounded text-brand-300 text-xs font-mono">robot-antenka-2026</code>).</li>
+                                    <li>Nastav viditelnost na <strong class="text-emerald-400">Public</strong> (aby byl tvůj kód veřejně viditelný pro hodnocení a katalog).</li>
+                                    <li><strong class="text-amber-400">Nezaškrtávej</strong> žádné z automatických tlačítek (README, .gitignore, licence) — inicializaci provedeme čistě u sebe lokálně.</li>
+                                    <li>Klikni na zelené tlačítko <strong class="text-white">Create repository</strong>. Zobrazí se prázdná stránka s návodem. Zkopíruj si URL adresu repozitáře.</li>
+                                </ol>
+                            </div>
+
+                            <!-- Lokal a Terminal krok -->
+                            <div>
+                                <p class="text-xs font-bold text-slate-450 uppercase tracking-wider mb-2 flex items-center gap-2"><i data-lucide="terminal" class="w-3.5 h-3.5"></i> Krok B: Inicializace a propojení v terminálu</p>
+                                <p class="text-slate-400 mb-2">Otevři si složku projektu v editoru (např. VS Code), otevři vestavěný terminál a postupně spusť tyto příkazy:</p>
+                                
+                                <div class="space-y-3">
+                                    <div class="p-3 bg-slate-950/60 border border-slate-800/80 rounded-xl">
+                                        <div class="flex justify-between items-center mb-1">
+                                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">1. Inicializace Gitu</span>
+                                        </div>
+                                        <code class="text-emerald-300 font-mono text-sm block">git init</code>
+                                        <p class="text-slate-400 text-xs mt-1">Vytvoří v aktuální složce skrytý adresář Gitu a zahájí sledování verzí.</p>
+                                    </div>
+
+                                    <div class="p-3 bg-slate-950/60 border border-slate-800/80 rounded-xl">
+                                        <div class="flex justify-between items-center mb-1">
+                                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">2. Vytvoření souboru .gitignore</span>
+                                        </div>
+                                        <p class="text-slate-400 text-xs mb-2">Vytvoř ve složce soubor s názvem <code class="text-white">.gitignore</code>. Ten zabrání tomu, aby se do repozitáře nahrávaly zbytečné dočasné soubory, složky překladače nebo knihoven. Do souboru vlož např.:</p>
+                                        <pre class="text-slate-350 font-mono text-[11px] bg-slate-900 border border-slate-800 p-2 rounded leading-relaxed"># PlatformIO/Arduino build a nastaveni
+.pio/
+.pioenvs/
+build/
+*.bin
+*.elf
+*.o
+
+# OS temporary files
+.DS_Store
+Thumbs.db</pre>
+                                    </div>
+
+                                    <div class="p-3 bg-slate-950/60 border border-slate-800/80 rounded-xl">
+                                        <div class="flex justify-between items-center mb-1">
+                                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">3. První commit a propojení</span>
+                                        </div>
+                                        <div class="space-y-2 font-mono text-xs text-brand-300">
+                                            <div class="text-slate-300"><code class="text-emerald-300 block mb-1">git add .</code> Příprava všech sledovaných souborů (včetně nového .gitignore) na uložení.</div>
+                                            <div class="text-slate-300"><code class="text-blue-300 block mb-1">git commit -m "První verze projektu"</code> Uložení stavu projektu na tvůj lokální počítač.</div>
+                                            <div class="text-slate-300"><code class="text-indigo-300 block mb-1">git branch -M main</code> Přejmenování hlavní větve na standardní název main.</div>
+                                            <div class="text-slate-300"><code class="text-pink-300 block mb-1">git remote add origin https://github.com/TVUJ_NICK/NAZEV_REPOZITARE.git</code> Propojení lokálního projektu s tvým prázdným repozitářem na GitHubu.</div>
+                                            <div class="text-slate-300"><code class="text-pink-300 block mb-1">git push -u origin main</code> Odeslání tvých uložených souborů na GitHub (příště už stačí psát jen <code class="text-white">git push</code>).</div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </li>
-                            <li class="flex gap-3">
-                                <span class="w-6 h-6 rounded-full bg-brand-500/15 border border-brand-500/25 text-brand-300 text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">5</span>
-                                <div><strong class="text-white">Klikni "Create repository"</strong> — hotovo! Teď si repo naklonuj na svůj počítač příkazem <code class="px-1.5 py-0.5 bg-slate-900 border border-slate-700 rounded text-brand-300 text-xs">git clone URL</code>.</div>
-                            </li>
-                        </ol>
-                        <div class="p-3 bg-amber-500/5 border border-amber-500/20 rounded-xl flex gap-2.5 mt-2">
-                            <i data-lucide="lightbulb" class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"></i>
-                            <p class="text-amber-200/80 text-xs">Repozitář dej vždy pod <strong>organizaci kroužku</strong>, ne pod svůj osobní profil — jinak k němu ostatní nebudou mít přístup.</p>
+                            </div>
                         </div>
                     </div>
                 </details>
 
-                <!-- Návod 2: Git Cheatsheet -->
+                <!-- Návod 2: Základní práce s Gitem a větvemi -->
                 <details class="group glass-panel border border-slate-800/40 rounded-2xl overflow-hidden">
                     <summary class="flex items-center justify-between gap-4 p-6 cursor-pointer select-none list-none hover:bg-slate-800/20 transition-colors">
                         <div class="flex items-center gap-4">
@@ -400,40 +430,108 @@
                         </div>
                         <i data-lucide="chevron-down" class="w-5 h-5 text-slate-500 flex-shrink-0 transition-transform duration-300 group-open:rotate-180"></i>
                     </summary>
-                    <div class="px-6 pb-6 border-t border-slate-800/40 pt-5 space-y-5 text-sm">
-                        <p class="text-slate-400">Tyhle čtyři příkazy používáš úplně pokaždé. Nauč se je nazpaměť!</p>
+                    <div class="px-6 pb-6 border-t border-slate-800/40 pt-5 space-y-6 text-sm text-slate-300">
+                        <p class="text-slate-400">Každodenní práce s Gitem stojí na čtyřech základních příkazech a používání větví (branches) pro bezpečné testování změn.</p>
+                        
+                        <!-- Čtyři příkazy -->
                         <div class="space-y-3">
-                            <div class="p-4 bg-slate-950/60 border border-slate-800 rounded-xl">
-                                <code class="text-emerald-300 font-mono font-bold text-sm">git pull origin main</code>
-                                <p class="text-slate-400 text-xs mt-2">⬇️ <strong class="text-slate-300">Stáhni si nejnovější verzi</strong> od ostatních členů kroužku. Dělej to vždy jako první věc, než začneš pracovat.</p>
+                            <p class="text-xs font-bold text-slate-450 uppercase tracking-wider mb-1 flex items-center gap-2"><i data-lucide="command" class="w-3.5 h-3.5"></i> Čtyři hlavní příkazy</p>
+                            
+                            <div class="p-4 bg-slate-950/60 border border-slate-800/60 rounded-xl">
+                                <div class="flex justify-between items-center mb-1">
+                                    <code class="text-emerald-300 font-mono font-bold text-sm">git pull</code>
+                                </div>
+                                <p class="text-slate-300 text-xs leading-relaxed"><strong class="text-white">Stáhne změny z GitHubu</strong> a sloučí je do tvé lokální složky. Používej ho vždy, když začínáš pracovat na kroužku, abys měl jistotu, že máš nejaktuálnější kód od svých kolegů.</p>
                             </div>
-                            <div class="p-4 bg-slate-950/60 border border-slate-800 rounded-xl">
-                                <code class="text-blue-300 font-mono font-bold text-sm">git add .</code>
-                                <p class="text-slate-400 text-xs mt-2">📦 <strong class="text-slate-300">Připrav všechny změněné soubory</strong> k uložení. Tečka znamená "všechno v aktuální složce".</p>
+
+                            <div class="p-4 bg-slate-950/60 border border-slate-800/60 rounded-xl">
+                                <div class="flex justify-between items-center mb-1">
+                                    <code class="text-blue-300 font-mono font-bold text-sm">git add .</code>
+                                </div>
+                                <p class="text-slate-300 text-xs leading-relaxed"><strong class="text-white">Označí změněné soubory</strong> a připraví je k uložení. Tečka označuje všechny soubory ve složce. Můžeš uvést i konkrétní soubor, např. <code class="text-slate-400">git add src/main.cpp</code>.</p>
                             </div>
-                            <div class="p-4 bg-slate-950/60 border border-slate-800 rounded-xl">
-                                <code class="text-brand-300 font-mono font-bold text-sm">git commit -m <span class="text-amber-300">"popis změn"</span></code>
-                                <p class="text-slate-400 text-xs mt-2">💾 <strong class="text-slate-300">Ulož změny s popisem.</strong> Piš krátce, ale jasně — co jsi změnil? Např. <em class="text-slate-300">"přidán senzor vzdálenosti na pin 5"</em>.</p>
+
+                            <div class="p-4 bg-slate-950/60 border border-slate-800/60 rounded-xl">
+                                <div class="flex justify-between items-center mb-1">
+                                    <code class="text-brand-300 font-mono font-bold text-sm">git commit -m "Stručný popis tvých úprav"</code>
+                                </div>
+                                <p class="text-slate-300 text-xs leading-relaxed"><strong class="text-white">Vytvoří bod záchrany (snapshot)</strong> ze staged změn na tvém lokálním disku. Zprávu v uvozovkách piš stručně a výstižně (např. <em class="text-slate-400">"opraven gyroskop, přeladěno PID"</em>).</p>
                             </div>
-                            <div class="p-4 bg-slate-950/60 border border-slate-800 rounded-xl">
-                                <code class="text-pink-300 font-mono font-bold text-sm">git push origin main</code>
-                                <p class="text-slate-400 text-xs mt-2">🚀 <strong class="text-slate-300">Pošli změny na GitHub.</strong> Teprve po tomhle příkazu ostatní uvidí tvou práci.</p>
+
+                            <div class="p-4 bg-slate-950/60 border border-slate-800/60 rounded-xl">
+                                <div class="flex justify-between items-center mb-1">
+                                    <code class="text-pink-300 font-mono font-bold text-sm">git push</code>
+                                </div>
+                                <p class="text-slate-300 text-xs leading-relaxed"><strong class="text-white">Odešle tvé lokální commity na GitHub</strong>. Teprve poté, co spustíš push, uvidí tvé změny ostatní a nahrají se do tvé složky online.</p>
                             </div>
                         </div>
-                        <div class="p-4 bg-slate-950/60 border border-slate-800/70 rounded-xl">
-                            <p class="text-[10px] uppercase font-bold text-slate-500 tracking-wider mb-2">Pro pokročilé — větve</p>
-                            <code class="text-slate-300 font-mono text-sm">git branch moje-nova-funkce</code>
-                            <code class="block text-slate-300 font-mono text-sm mt-1">git checkout moje-nova-funkce</code>
-                            <p class="text-slate-400 text-xs mt-2">🌿 Vlastní větev ti umožní experimentovat bez rizika, že "rozbije" fungující kód ostatních. Až budeš spokojený, větev <em class="text-slate-300">mergneš</em> do main.</p>
-                        </div>
-                        <div class="p-3 bg-emerald-500/5 border border-emerald-500/20 rounded-xl flex gap-2.5">
-                            <i data-lucide="info" class="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5"></i>
-                            <p class="text-emerald-200/80 text-xs"><strong>Zlaté pravidlo:</strong> vždy nejdřív <code class="text-emerald-300">git pull</code>, pak pracuj, pak <code class="text-emerald-300">git add → commit → push</code>. Ušetříš si hodiny řešení konfliktů.</p>
+
+                        <!-- Větve (Branches) -->
+                        <div class="space-y-3 pt-3 border-t border-slate-800/50">
+                            <p class="text-xs font-bold text-slate-450 uppercase tracking-wider flex items-center gap-2"><i data-lucide="git-branch" class="w-3.5 h-3.5 text-indigo-400"></i> Práce s větvemi (Branches) — Bezpečné experimenty</p>
+                            <p class="text-slate-400 text-xs leading-relaxed">
+                                Představ si, že píšeš knihu. Hlavní příběh je větev <code class="text-white">main</code>. Chceš zkusit napsat alternativní kapitolu, tak si vytvoříš novou větev (paralelní vesmír). Tam píšeš a upravuješ. Pokud se ti výsledek nelíbí, větev jednoduše smažeš a hlavní příběh (<code class="text-white">main</code>) zůstane netknutý. Pokud se ti experiment líbí, sloučíš (<code class="text-white">merge</code>) ho zpět do hlavní větve.
+                            </p>
+
+                            <!-- Visual branch diagram -->
+                            <div class="p-5 bg-slate-950/70 border border-slate-800/80 rounded-xl font-mono text-[11px] space-y-3 relative overflow-hidden">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
+                                    <span class="text-emerald-400 font-bold">main:</span>
+                                    <span class="text-slate-400">přidáno základní šasi a motory</span>
+                                </div>
+                                <div class="flex items-center gap-2 pl-4 border-l border-slate-700/60 my-1">
+                                    <span class="text-slate-600">│</span>
+                                    <span class="text-indigo-400 text-[10px] font-sans">⚡ vytvořena větev pro nový kód (git checkout -b test-gyra)</span>
+                                </div>
+                                <div class="flex items-center gap-2 pl-6">
+                                    <span class="w-3 h-3 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.5)]"></span>
+                                    <span class="text-indigo-300 font-bold">test-gyra:</span>
+                                    <span class="text-slate-400">přidáno čtení dat z gyroskopu a I2C</span>
+                                </div>
+                                <div class="flex items-center gap-2 pl-6">
+                                    <span class="w-3 h-3 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.5)]"></span>
+                                    <span class="text-indigo-300 font-bold">test-gyra:</span>
+                                    <span class="text-slate-400">opraven drift pomocí kalibrace za klidu</span>
+                                </div>
+                                <div class="flex items-center gap-2 pl-4 border-l border-slate-700/60 my-1">
+                                    <span class="text-slate-600">│</span>
+                                    <span class="text-emerald-400 text-[10px] font-sans">🔄 sloučení otestovaného kódu (git merge)</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
+                                    <span class="text-emerald-400 font-bold">main:</span>
+                                    <span class="text-slate-400">commit se stabilním kódem gyroskopu!</span>
+                                </div>
+                            </div>
+
+                            <!-- Příkazy pro větve -->
+                            <div class="space-y-2 mt-2">
+                                <div class="p-3 bg-slate-950/60 border border-slate-800/80 rounded-xl">
+                                    <code class="text-indigo-300 font-mono text-sm block">git checkout -b nova-vetev</code>
+                                    <p class="text-slate-400 text-xs mt-1">Vytvoří novou větev <code class="text-slate-300">nova-vetev</code> a ihned tě do ní přepne.</p>
+                                </div>
+
+                                <div class="p-3 bg-slate-950/60 border border-slate-800/80 rounded-xl">
+                                    <code class="text-indigo-300 font-mono text-sm block">git checkout main</code>
+                                    <p class="text-slate-400 text-xs mt-1">Přepne tě zpět do hlavní větve (tvůj kód se v editoru vrátí do stabilního stavu).</p>
+                                </div>
+
+                                <div class="p-3 bg-slate-950/60 border border-slate-800/80 rounded-xl">
+                                    <code class="text-indigo-300 font-mono text-sm block">git merge nova-vetev</code>
+                                    <p class="text-slate-400 text-xs mt-1"><strong class="text-white">Sloučí změny</strong> z větve <code class="text-slate-300">nova-vetev</code> do větve, ve které se nacházíš (musíš být v main). Spouštěj jen tehdy, když kód ve větvi funguje a je otestován.</p>
+                                </div>
+
+                                <div class="p-3 bg-slate-950/60 border border-slate-800/80 rounded-xl">
+                                    <code class="text-indigo-300 font-mono text-sm block">git branch</code>
+                                    <p class="text-slate-400 text-xs mt-1">Zobrazí seznam všech větví v projektu a označí hvězdičkou tu, na které právě pracuješ.</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </details>
 
-                <!-- Návod 3: README a fotky -->
+                <!-- Návod 3: Dokumentace - Složky, CAD a README.md -->
                 <details class="group glass-panel border border-slate-800/40 rounded-2xl overflow-hidden">
                     <summary class="flex items-center justify-between gap-4 p-6 cursor-pointer select-none list-none hover:bg-slate-800/20 transition-colors">
                         <div class="flex items-center gap-4">
@@ -442,100 +540,70 @@
                             </div>
                             <div>
                                 <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider block mb-0.5">Návod 3</span>
-                                <span class="font-outfit font-bold text-white text-base">Standard dokumentace: README.md a fotky</span>
+                                <span class="font-outfit font-bold text-white text-base">Dokumentace: README, CAD modely a struktura složek</span>
                             </div>
                         </div>
                         <i data-lucide="chevron-down" class="w-5 h-5 text-slate-500 flex-shrink-0 transition-transform duration-300 group-open:rotate-180"></i>
                     </summary>
-                    <div class="px-6 pb-6 border-t border-slate-800/40 pt-5 space-y-5 text-sm">
-                        <p class="text-slate-400">Dobrý README je jako technický průkaz robota — kdokoli ho otevře a okamžitě ví, co robot dělá a jak je zapojen.</p>
-                        <div class="space-y-2">
-                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">README musí obsahovat:</p>
-                            <ul class="space-y-2">
-                                <li class="flex items-start gap-2.5"><i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5"></i><span class="text-slate-300"><strong class="text-white">Stručný popis robota</strong> — co dělá, na jakou soutěž byl postaven, kdo ho vyrobil.</span></li>
-                                <li class="flex items-start gap-2.5"><i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5"></i><span class="text-slate-300"><strong class="text-white">Seznam pinů a zapojení</strong> — tabulka nebo schéma, co je připojeno kam.</span></li>
-                                <li class="flex items-start gap-2.5"><i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5"></i><span class="text-slate-300"><strong class="text-white">Hlavní fotografie robota</strong> — tu samou, kterou nahraješ i do katalogu přes Issue.</span></li>
+                    <div class="px-6 pb-6 border-t border-slate-800/40 pt-5 space-y-6 text-sm text-slate-300">
+                        <p class="text-slate-400">Správně zdokumentovaný projekt umožní komukoliv (i tobě za půl roku) postavit, zapojit a oživit robota znovu. Používej doporučenou strukturu repozitáře a README.</p>
+
+                        <!-- Struktura složek -->
+                        <div>
+                            <p class="text-xs font-bold text-slate-450 uppercase tracking-wider mb-2 flex items-center gap-2"><i data-lucide="folder-open" class="w-3.5 h-3.5"></i> Doporučená struktura složek</p>
+                            <div class="p-4 bg-slate-950/60 border border-slate-800/80 rounded-xl">
+                                <pre class="text-slate-300 font-mono text-xs leading-loose">📁 muj-robot-2026/
+├── 📁 firmware/          ← Zdrojové kódy programu (.ino, main.cpp...)
+├── 📁 docs/
+│   └── 📁 photos/        ← Fotky robota a detailní fotky zapojení kabelů
+├── 📁 cad/
+│   ├── 📁 print/         ← STL, STEP, 3MF soubory pro 3D tisk
+│   └── 📁 source/        ← Zdrojové editovatelné CAD sestavy (SLDPRT, SLDASM, F3D...)
+└── README.md             ← Technický průkaz a popis robota</pre>
+                            </div>
+                        </div>
+
+                        <!-- CAD modely -->
+                        <div>
+                            <p class="text-xs font-bold text-slate-455 uppercase tracking-wider mb-2 flex items-center gap-2"><i data-lucide="boxes" class="w-3.5 h-3.5 text-amber-400"></i> Mechanický design a 3D modely</p>
+                            <p class="text-slate-400 text-xs leading-relaxed">
+                                Vždy nahrávej do složky <code class="text-amber-300">cad/source/</code> původní editovatelné soubory z CAD programů (SolidWorks, Fusion 360). Pokud se nějaký 3D tištěný díl poškodí nebo opotřebí, kdokoli z kroužku ho bude moci upravit a vytisknout znovu. Pouhé STL soubory jsou k dalším úpravám nevhodné.
+                            </p>
+                        </div>
+
+                        <!-- Co musí obsahovat README -->
+                        <div>
+                            <p class="text-xs font-bold text-slate-450 uppercase tracking-wider mb-2 flex items-center gap-2"><i data-lucide="file-edit" class="w-3.5 h-3.5"></i> Co musí obsahovat soubor README.md</p>
+                            <ul class="space-y-2.5 pl-1">
+                                <li class="flex items-start gap-2.5">
+                                    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5"></i>
+                                    <span><strong class="text-white">Popis robota:</strong> Jaké soutěže se účastnil a co je jeho cílem.</span>
+                                </li>
+                                <li class="flex items-start gap-2.5">
+                                    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5"></i>
+                                    <span><strong class="text-white">Seznam komponentů (kusovník):</strong> Použité motory, senzory a vývojová deska.</span>
+                                </li>
+                                <li class="flex items-start gap-2.5">
+                                    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5"></i>
+                                    <span><strong class="text-white">Tabulka zapojení pinů:</strong> Přehledné propojení periferií s deskou (nepostradatelné pro oživení).</span>
+                                </li>
+                                <li class="flex items-start gap-2.5">
+                                    <i data-lucide="camera" class="w-4 h-4 text-brand-400 flex-shrink-0 mt-0.5"></i>
+                                    <span><strong class="text-white">Fotka zapojení kabelů a elektroniky:</strong> Nahraj detailní fotku celého zapojení. Pokud se uvolní dráty, podle této fotky je zapojíš zpět bez pracného dohledávání.</span>
+                                </li>
                             </ul>
                         </div>
-                        <div class="p-4 bg-red-500/5 border border-red-500/25 rounded-xl space-y-2">
-                            <div class="flex items-center gap-2 mb-1">
-                                <i data-lucide="alert-triangle" class="w-4 h-4 text-red-400"></i>
-                                <span class="text-red-300 font-bold text-xs uppercase tracking-wider">Klíčové doporučení kroužku</span>
-                            </div>
-                            <p class="text-slate-300 text-sm leading-relaxed">Důrazně doporučujeme do README nahrávat <strong class="text-white">detailní fotky zapojení kabelů a elektroniky!</strong> Když se robot po půl roce rozbije, bez fotky zapojení ho nikdo nedá dohromady.</p>
-                        </div>
-                        <div class="flex items-center justify-between p-4 bg-slate-950/60 border border-slate-800 rounded-xl gap-4">
+
+                        <!-- Tlačítko pro kopírování šablony -->
+                        <div class="flex flex-col sm:flex-row items-center justify-between p-4 bg-slate-950/60 border border-slate-800/80 rounded-xl gap-4">
                             <div>
-                                <p class="font-bold text-white text-sm">Šablona README pro kroužek</p>
-                                <p class="text-slate-400 text-xs mt-0.5">Zkopíruj hotovou strukturu přímo do svého repozitáře.</p>
+                                <p class="font-bold text-white text-sm">Šablona README.md pro kroužek</p>
+                                <p class="text-slate-400 text-xs mt-0.5">Zkopíruj si doporučenou strukturu a vyplň ji podle svého robota.</p>
                             </div>
                             <button id="btn-copy-readme" onclick="copyReadmeTemplate()" class="flex-shrink-0 flex items-center gap-2 px-4 py-2.5 bg-blue-600/15 hover:bg-blue-600/25 border border-blue-500/30 text-blue-300 hover:text-white text-xs font-bold rounded-xl transition-all">
                                 <i data-lucide="clipboard-copy" class="w-4 h-4"></i>
                                 Zkopírovat šablonu
                             </button>
-                        </div>
-                    </div>
-                </details>
-
-                <!-- Návod 4: 3D Modely / CAD -->
-                <details class="group glass-panel border border-slate-800/40 rounded-2xl overflow-hidden">
-                    <summary class="flex items-center justify-between gap-4 p-6 cursor-pointer select-none list-none hover:bg-slate-800/20 transition-colors">
-                        <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center flex-shrink-0">
-                                <i data-lucide="boxes" class="w-5 h-5 text-amber-400"></i>
-                            </div>
-                            <div>
-                                <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider block mb-0.5">Návod 4</span>
-                                <span class="font-outfit font-bold text-white text-base">Mechanický design a 3D modely (CAD/SolidWorks)</span>
-                            </div>
-                        </div>
-                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-500 flex-shrink-0 transition-transform duration-300 group-open:rotate-180"></i>
-                    </summary>
-                    <div class="px-6 pb-6 border-t border-slate-800/40 pt-5 space-y-5 text-sm">
-                        <p class="text-slate-400">Elektronika je jen polovina robota. Mechanika a 3D tisk jsou stejně důležité — a stejně tak potřebují zálohu.</p>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <div class="p-4 bg-slate-950/60 border border-slate-800 rounded-xl space-y-1.5">
-                                <div class="flex items-center gap-2 mb-2">
-                                    <i data-lucide="printer" class="w-4 h-4 text-amber-400"></i>
-                                    <span class="font-bold text-white text-xs">Soubory k tisku</span>
-                                </div>
-                                <p class="text-slate-400 text-xs">Nahrávej finální soubory pro 3D tiskárnu:</p>
-                                <div class="flex flex-wrap gap-1.5 mt-2">
-                                    <span class="px-2 py-0.5 bg-amber-500/10 text-amber-300 border border-amber-500/20 rounded text-[10px] font-bold">.stl</span>
-                                    <span class="px-2 py-0.5 bg-amber-500/10 text-amber-300 border border-amber-500/20 rounded text-[10px] font-bold">.step</span>
-                                    <span class="px-2 py-0.5 bg-amber-500/10 text-amber-300 border border-amber-500/20 rounded text-[10px] font-bold">.3mf</span>
-                                </div>
-                            </div>
-                            <div class="p-4 bg-slate-950/60 border border-slate-800 rounded-xl space-y-1.5">
-                                <div class="flex items-center gap-2 mb-2">
-                                    <i data-lucide="layers" class="w-4 h-4 text-blue-400"></i>
-                                    <span class="font-bold text-white text-xs">Zdrojové soubory sestav</span>
-                                </div>
-                                <p class="text-slate-400 text-xs">Nahrávej i editovatelné zdrojáky pro CAD:</p>
-                                <div class="flex flex-wrap gap-1.5 mt-2">
-                                    <span class="px-2 py-0.5 bg-blue-500/10 text-blue-300 border border-blue-500/20 rounded text-[10px] font-bold">.sldprt</span>
-                                    <span class="px-2 py-0.5 bg-blue-500/10 text-blue-300 border border-blue-500/20 rounded text-[10px] font-bold">.sldasm</span>
-                                    <span class="px-2 py-0.5 bg-blue-500/10 text-blue-300 border border-blue-500/20 rounded text-[10px] font-bold">.f3d</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-xl flex gap-3">
-                            <i data-lucide="recycle" class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5"></i>
-                            <div>
-                                <p class="text-emerald-200 font-bold text-sm mb-1">Proč to dělat?</p>
-                                <p class="text-slate-400 text-xs leading-relaxed">Díky nahraným souborům bude mít kdokoli v budoucnu možnost si poškozenou součástku robota <strong class="text-slate-200">znovu vytisknout nebo upravit</strong> — i bez tebe, i za tři roky. Tiskárna v kroužku stojí, 3D modely bez zdrojáků jsou k ničemu.</p>
-                            </div>
-                        </div>
-                        <div class="p-3 bg-slate-900/60 border border-slate-800 rounded-xl">
-                            <p class="text-[10px] uppercase font-bold text-slate-500 tracking-wider mb-2">Doporučená struktura složek v repozitáři</p>
-                            <pre class="text-slate-300 font-mono text-xs leading-loose">📁 robot-nazev/
-├── 📁 firmware/        ← kód pro mikrokontrolér
-├── 📁 cad/
-│   ├── 📁 step/        ← .step / .stl pro tisk
-│   └── 📁 source/      ← .sldprt, .sldasm, .f3d
-├── 📁 docs/
-│   └── 📁 photos/      ← fotky zapojení + robot
-└── README.md</pre>
                         </div>
                     </div>
                 </details>
